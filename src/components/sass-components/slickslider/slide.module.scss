@@ -16,6 +16,7 @@
    
 }
 .mainslider{
+    margin-top: 20px;
     position: relative;
 }
 .pic2edit{
@@ -56,6 +57,7 @@
     left: 100px;
 }
 .mainslider2{
+    margin-top: 20px;
     position: relative;
 }
 .h3edit{
@@ -72,9 +74,11 @@
 }
 .p2editt{
     font-size: 17px;
-    max-width: 280px;
-    font-weight: 700;
+    max-width: 250px;
+    max-height: 150px;
     z-index: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
     position: absolute;
     top: 150px;
     left: 40px;
@@ -82,7 +86,7 @@
 .pic3edit{
     position: absolute;
     top: 0px;
-    left: -50px;
+    left: -20px;
 }
 .profile2edit{
     z-index: 2;

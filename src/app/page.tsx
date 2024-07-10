@@ -1,4 +1,3 @@
-'use client';
 import Homepage from "@/components/sass-components/page";
 
 export default function Home() {
