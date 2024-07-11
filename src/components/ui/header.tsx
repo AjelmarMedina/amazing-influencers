@@ -62,9 +62,9 @@ function Nav({ className, children }: React.HtmlHTMLAttributes<ReactElement>) {
 
 function AccountSet({ className }: React.HtmlHTMLAttributes<ReactElement>) {
   return (
-    <div className={className}>
+    <div className={cn("space-x-2", className)}>
       <Button variant={"ghost"} className="text-primary hover:text-primary text-base" asChild={true}>
-        <Link href={""}>
+        <Link href={"/login"}>
           Login
         </Link>
       </Button>

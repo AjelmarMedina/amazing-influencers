@@ -18,7 +18,7 @@ const formSchema = z.object({
   isTermsChecked: z.boolean({required_error: ""}),
 })
 
-export default function Login() {
+export default function Register() {
 
   return (
     <main className="w-full h-fit min-h-screen pt-28 py-28 bg-[#F5FAFF]">
@@ -57,7 +57,7 @@ function RegisterForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col items-stretch space-y-8 bg-white p-5 rounded-xl">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col items-stretch space-y-8 bg-white p-5 rounded-xl w-full max-w-lg">
         <div className="grid grid-cols-2 gap-x-5">
           <FormField
             control={form.control}
@@ -140,6 +140,9 @@ function RegisterForm() {
           )}
         />
         <Button type="submit" className="bg-primary hover:bg-primary/90">Submit</Button>
+        <p className="text-center">
+          Already hav e an account? <Link href={"/login"} className="text-primary hover:underline">Login</Link>
+        </p>
       </form>
     </Form>
   )
