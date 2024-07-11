@@ -1,6 +1,7 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
@@ -16,21 +17,37 @@ import {
 import { Input } from "@/components/ui/input"
 import Image from "next/image"
 
+const orders = [
+  {
+    orderId: "5731649285714360",
+    name: "Hydrating Serum",
+  },
+]
+
 const formSchema = z.object({
-  orderNum: z.string().min(16).max(16),
+  orderNum: z.string().min(16).max(16).refine((val) => orders.find((order) => order.orderId === val), 
+    { message: "Order doesn't exist" }
+  ),
 })
 
 export default function Claim() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams()
+  const orderNum = searchParams.get('code');
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      orderNum: "",
+      orderNum: orderNum ?? "",
     },
   })
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     // ✅ This will be type-safe and validated.
-    console.log(values)
+    const params = new URLSearchParams();
+    params.set("order", values.orderNum);
+    router.push(`${pathname}/rate?${params.toString()}`)
   }
 
   return(
