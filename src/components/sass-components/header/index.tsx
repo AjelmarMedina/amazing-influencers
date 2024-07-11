@@ -1,5 +1,42 @@
 'use client';
 
+import { useState } from 'react';
+import style from './header.module.scss';
+
+const Header = () => {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
+
+  return (
+    <div>
+      <header className={style.header}>
+        <div className={style.logo}>
+          <h3>Amazing<span> Influencers</span></h3>
+        </div>
+        <div className={`${style.namefields} ${menuOpen ? style.show : ''}`}>
+          <span>Home</span>
+          <span>About Us</span>
+          <span>Service</span>
+          <span>Get in Touch</span>
+        </div>
+        <div className={`${style.buttons} ${menuOpen ? style.show : ''}`}>
+          <button className={style.loginbutton}>Login</button>
+          <button className={style.signupbutton}>Sign Up</button>
+        </div>
+        <button className={style.mobilemenubutton} onClick={toggleMenu}>
+          {menuOpen ? 'Close' : 'Menu'}
+        </button>
+      </header>
+    </div>
+  );
+};
+
+export default Header;
+
+/*
 // import Button from 'react-bootstrap/Button';
 // import Container from 'react-bootstrap/Container';
 // import Form from 'react-bootstrap/Form';
@@ -50,41 +87,5 @@
 //   );
 // }
 
-// export default NavScrollExample;
-import { useState } from 'react';
-import style from './header.module.scss';
-
-const Header = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  const toggleMenu = () => {
-    setMenuOpen(!menuOpen);
-  };
-
-  return (
-    <div>
-      <header className={style.header}>
-        <div className={style.logo}>
-          <h3>Amazing<span> Influencers</span></h3>
-        </div>
-        <div className={`${style.namefields} ${menuOpen ? style.show : ''}`}>
-          <span>Home</span>
-          <span>About Us</span>
-          <span>Service</span>
-          <span>Get in Touch</span>
-        </div>
-        <div className={`${style.buttons} ${menuOpen ? style.show : ''}`}>
-          <button className={style.loginbutton}>Login</button>
-          <button className={style.signupbutton}>Sign Up</button>
-        </div>
-        <button className={style.mobilemenubutton} onClick={toggleMenu}>
-          {menuOpen ? 'Close' : 'Menu'}
-        </button>
-      </header>
-    </div>
-  );
-};
-
-export default Header;
-
-
+// export default NavScrollExample; 
+*/
