@@ -1,12 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
-import Header from "../header";
 import SimpleSlider from "../slickslider/slider";
 import style from "./home.module.scss";
 const Home = () => {
   return (
     <>
       <section className={style.holepage}>
-        <Header />
         <section className={style.sec1}>
           <div>
             <div className={style.mainheaddiv}>
