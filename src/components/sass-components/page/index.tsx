@@ -1,7 +1,9 @@
 /* eslint-disable @next/next/no-img-element */
 import Footer from "@/components/ui/footer";
+import Link from "next/link";
 import SimpleSlider from "../slickslider/slider";
 import style from "./home.module.scss";
+
 const Home = () => {
   return (
     <>
@@ -19,7 +21,7 @@ const Home = () => {
               Scan the QR code on your receipt and unlock exclusive offers.
             </p>
             <div className={style.btndiv}>
-              <button className={style.btn1}>Find your rewards now</button>
+              <Link href={"/claim"}><button className={style.btn1}>Find your rewards now</button></Link>
               <button className={style.btn2}>Watch The Demo</button>
             </div>
           </div>
