@@ -18,7 +18,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Textarea } from "@/components/ui/textarea"
 import Image from "next/image"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { useState } from "react"
+import { Suspense, useState } from "react"
 
 const orders = [
   {
@@ -35,7 +35,15 @@ const formSchema = z.object({
   review: z.string().min(8, "Leave a longer review").max(512, "Review is too long")
 })
 
-export default function Rate() {
+export default function Page() {
+  return (
+    <Suspense>
+      <Rate />
+    </Suspense>
+  )
+}
+
+function Rate() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams()

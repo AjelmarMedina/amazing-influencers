@@ -15,12 +15,21 @@ import {
 } from "@/components/ui/form"
 import { Textarea } from "@/components/ui/textarea"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { Suspense } from "react"
 
 const formSchema = z.object({
   review: z.string()
 })
 
-export default function Rate() {
+export default function Page() {
+  return (
+    <Suspense>
+      <Paste />
+    </Suspense>
+  )
+}
+
+function Paste() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();

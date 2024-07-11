@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import Image from "next/image"
+import { Suspense } from "react"
 
 const orders = [
   {
@@ -30,7 +31,15 @@ const formSchema = z.object({
   ),
 })
 
-export default function Claim() {
+export default function Page() {
+  return (
+    <Suspense>
+      <Claim />
+    </Suspense>
+  )
+}
+
+function Claim() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams()

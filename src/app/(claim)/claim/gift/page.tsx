@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/form"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { Suspense } from "react"
 
 const giveaways = [
   "$1 Amazon gift card",
@@ -27,7 +28,15 @@ const formSchema = z.object({
   gift: z.string({ required_error: "Choose your gift" })
 })
 
-export default function Rate() {
+export default function Page() {
+  return (
+    <Suspense>
+      <Gift />
+    </Suspense>
+  )
+}
+
+function Gift() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();

@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { Suspense } from "react"
 
 const formSchema = z.object({
   fullName: z.string().min(2, "Name is too short").max(256, "Name is too long"),
@@ -27,7 +28,15 @@ const formSchema = z.object({
   zipCode: z.string().min(2).max(16),
 })
 
-export default function Rate() {
+export default function Page() {
+  return (
+    <Suspense>
+      <Shipping />
+    </Suspense>
+  )
+}
+
+function Shipping() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
