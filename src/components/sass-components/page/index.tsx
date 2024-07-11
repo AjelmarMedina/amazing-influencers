@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+import Footer from "@/components/ui/footer";
 import SimpleSlider from "../slickslider/slider";
 import style from "./home.module.scss";
 const Home = () => {
@@ -101,21 +102,7 @@ const Home = () => {
           <img src={"/images/pic6.png"} alt="" />
         </section>
       </section>
-      <section className={style.sec4}>
-    <div className={style.borderlast}>
-        <p className={style.footertext}>Amazing <span className={style.footerspan}>Influencers</span></p>
-      </div>
-      <div className={style.lastflexitems}>
-
-      <small className={style.smalltxt}>© 2024 Amazinginfluencers.com | All rights reserved.</small>
-      <div className={style.tags}>
-        <img src={"/images/Facebook.png"} alt="" />
-        <img src={"/images/Instagram.png"} alt="" />
-        <img src={"/images/TwitterX.png"} alt="" />
-      </div>
-      </div>
-      </section>
-     
+      <Footer />
     </>
   );
 };
