@@ -69,7 +69,7 @@ function AccountSet({ className }: React.HtmlHTMLAttributes<ReactElement>) {
         </Link>
       </Button>
       <Button variant={"default"} className="text-white bg-primary hover:bg-primary/90 text-base" asChild={true}>
-        <Link href={""}>
+        <Link href={"/register"}>
           Sign up
         </Link>
       </Button>
