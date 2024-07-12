@@ -89,7 +89,7 @@ const Home = () => {
           
         </section>
         <section>
-          <SimpleSlider />
+          <SimpleSlider className="bg-[rgba(32,201,151,0.05)]" />
         </section>
         <section className={style.sec3main}>
           <div>
