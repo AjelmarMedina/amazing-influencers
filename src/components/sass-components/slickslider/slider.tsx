@@ -1,11 +1,12 @@
 "use client";
 /* eslint-disable @next/next/no-img-element */
+import { cn } from "@/lib/utils";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
 import style from "./slide.module.scss";
 
-export default function SimpleSlider() {
+export default function SimpleSlider({ className }: React.HtmlHTMLAttributes<HTMLElement> ) {
   const settings = {
     dots: true,
     infinite: true,
@@ -16,8 +17,16 @@ export default function SimpleSlider() {
   };
 
   return (
-    <>
-      <section className={style.mainsec}>
+    <section>
+      <header className="w-full flex flex-col px-4 md:px-8 lg:px-24 py-8 space-y-6 text-center justify-stretch">
+        <h2 className="text-3xl font-bold">
+          Trusted by honest entrepreneurs
+        </h2>
+        <p className="text-xl">
+          Here, you can explore what other customers have shared about their Amazing Influencers journey.
+        </p>
+      </header>
+      <article className={cn(style.mainsec, className)}>
         <Slider {...settings} className={style.editsliderr}>
           <div className={style.mainslider}>
             <img src={"/images/profile1.png"} alt="" className={style.profile1edit} />
@@ -59,7 +68,7 @@ export default function SimpleSlider() {
             </p>
           </div>
         </Slider>
-      </section>
-    </>
+      </article>
+    </section>
   );
 }

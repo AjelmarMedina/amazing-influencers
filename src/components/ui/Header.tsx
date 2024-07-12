@@ -3,6 +3,7 @@
 import { cn } from "@/lib/utils";
 import { MenuIcon } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ReactElement, useState } from "react";
 import { Button } from "./button";
 
@@ -39,21 +40,45 @@ export default function Header() {
 }
 
 function Nav({ className, children }: React.HtmlHTMLAttributes<ReactElement>) {
+  const pathname = usePathname();
+  
   return(
     <nav className={cn("*:text-xl", className)}>
-      <Button variant={"ghost"} asChild={true}>
+      <Button
+        variant={"ghost"}
+        asChild={true}
+        className={cn(pathname === "/" && "text-primary hover:text-primary/90")}
+      >
         <Link href={"/"}>
           Home
         </Link>
       </Button>
-      <Button variant={"ghost"}>
-        About us
+      <Button
+        variant={"ghost"}
+        asChild={true}
+        className={cn(pathname === "/about" && "text-primary hover:text-primary/90")}
+      >
+        <Link href={"/about"}>
+          About us
+        </Link>
       </Button>
-      <Button variant={"ghost"}>
-        Services
+      <Button
+        variant={"ghost"}
+        asChild={true}
+        className={cn(pathname === "/services" && "text-primary hover:text-primary/90")}
+      >
+        <Link href={"/services"}>
+          Services
+        </Link>
       </Button>
-      <Button variant={"ghost"}>
-        Get in touch
+      <Button
+        variant={"ghost"}
+        asChild={true}
+        className={cn(pathname === "/contact" && "text-primary hover:text-primary/90")}
+      >
+        <Link href={"/contact"}>
+          Get in touch
+        </Link>
       </Button>
       {children}
     </nav>
