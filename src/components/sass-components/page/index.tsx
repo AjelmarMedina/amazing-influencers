@@ -22,7 +22,7 @@ const Home = () => {
             </p>
             <div className={style.btndiv}>
               <Link href={"/claim"}><button className={style.btn1}>Find your rewards now</button></Link>
-              <button className={style.btn2}>Watch The Demo</button>
+              <Link href={"/demo"}><button className={style.btn2}>Watch The Demo</button></Link>
             </div>
           </div>
           <div className={style.picdiv1}>
