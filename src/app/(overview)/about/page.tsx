@@ -1,6 +1,6 @@
+import Footer from "@/components/Footer";
 import SimpleSlider from "@/components/sass-components/slickslider/slider";
 import { Button } from "@/components/ui/button";
-import Footer from "@/components/ui/footer";
 import Image from "next/image";
 import Link from "next/link";
 

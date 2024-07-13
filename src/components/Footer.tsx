@@ -1,11 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
-import style from "../sass-components/page/home.module.scss";
+import AmazingInfluencers from "./Logo";
+import style from "./sass-components/page/home.module.scss";
 
 export default function Footer() {
   return (
     <footer className={style.sec4}>
       <div className={style.borderlast}>
-        <p className={style.footertext}>Amazing <span className={style.footerspan}>Influencers</span></p>
+        <AmazingInfluencers />
       </div>
       <div className={style.lastflexitems}>
 

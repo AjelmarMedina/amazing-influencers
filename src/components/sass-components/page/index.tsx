@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import Footer from "@/components/ui/footer";
+import Footer from "@/components/Footer";
 import Link from "next/link";
 import SimpleSlider from "../slickslider/slider";
 import style from "./home.module.scss";

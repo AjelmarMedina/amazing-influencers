@@ -1,4 +1,4 @@
-import Footer from "@/components/ui/footer"
+import Footer from "@/components/Footer"
 import Image from "next/image"
 
 export default function Services() {
