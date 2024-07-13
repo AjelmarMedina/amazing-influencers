@@ -1,5 +1,5 @@
 import pngRewardsBackdrop from "@/../public/claim/rewards-backdrop.png";
-import Footer from "@/components/ui/footer";
+import Footer from "@/components/Footer";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 

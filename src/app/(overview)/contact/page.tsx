@@ -1,4 +1,4 @@
-import Footer from "@/components/ui/footer";
+import Footer from "@/components/Footer";
 import { MailOpenIcon, MapPinIcon, PhoneIcon } from "lucide-react";
 import Image from "next/image";
 import { Suspense } from "react";

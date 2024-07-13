@@ -1,4 +1,4 @@
-import Footer from "@/components/ui/footer";
+import Footer from "@/components/Footer";
 import { cn } from "@/lib/utils";
 import { CircleArrowOutUpLeftIcon, PhoneCallIcon } from "lucide-react";
 import Link from "next/link";
