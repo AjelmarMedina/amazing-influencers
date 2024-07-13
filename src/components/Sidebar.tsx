@@ -2,16 +2,19 @@
 
 import { cn } from "@/lib/utils";
 import { BanknoteIcon, CheckIcon, FileTextIcon, GiftIcon, HexagonIcon, PackageIcon, ShoppingBagIcon, StarIcon, StoreIcon, UploadIcon } from "lucide-react";
-import { Montserrat } from "next/font/google";
 import Link from "next/link";
 import { usePathname } from 'next/navigation';
 import React from "react";
+import AmazingInfluencers from "./Logo";
 import { Button } from "./ui/button";
 
-const montserrat = Montserrat({ subsets: ["latin"] });
+type SidebarLink = {
+  name: string;
+  route: string;
+  icon: React.ReactNode;
+}
 
-
-export default function Sidebar() {
+export default function Sidebar({ className }: React.HtmlHTMLAttributes<HTMLElement>) {
   const pathname = usePathname();
   const features = [
     {
@@ -79,16 +82,10 @@ export default function Sidebar() {
 
   return (
     <aside
-      className={cn("max-w-72 w-72 min-w-72 h-screen min-h-screen max-h-screen flex flex-col items-stretch shadow-lg z-10",)}
+      className={cn("max-w-72 w-72 min-w-72 h-screen min-h-screen max-h-screen flex flex-col items-stretch shadow-lg z-10", className)}
     >
       <section className="flex justify-center items-center p-6 space-x-0 border-b *:border-[#343A40] *:border-opacity-25">
-        <Button variant={"ghost"} className={cn(montserrat.className, "hover:bg-transparent text-xl font-semibold")} asChild={true}>
-          <Link href={"/"} >
-            <h1 className="w-max h-full text-base">
-              Amazing <span className="text-primary">Influencers</span>
-            </h1>
-          </Link>
-        </Button>
+        <AmazingInfluencers />
       </section>
       <div className={cn("flex-col items-stretch h-full overflow-y-auto",
         "*:border-b *:border-[#343A40] *:border-opacity-25 *:flex *:flex-col *:py-4",
@@ -110,25 +107,6 @@ export default function Sidebar() {
       </div>
     </aside>
   )
-
-  type SidebarLink = {
-    name: string;
-    route: string;
-    icon: React.ReactNode;
-  }
-
-  function SidebarButton({ name, route, icon }: SidebarLink) {
-    return (
-      <Button variant={"ghost"} className={cn("w-full text-start justify-start", pathname === route && "bg-primary/15")} asChild={true}>
-        <Link href={route}>
-          <span className={cn("mr-4", pathname === route && "text-primary")} >
-            { icon }
-          </span>
-          { name }
-        </Link>
-      </Button>
-    )
-  }
 
   function SidebarSection({ section, links }: {
     section: string;
@@ -153,5 +131,19 @@ export default function Sidebar() {
       </section>
     )
   }
+
+  function SidebarButton({ name, route, icon }: SidebarLink) {
+    return (
+      <Button variant={"ghost"} className={cn("w-full text-start justify-start", pathname === route && "bg-primary/15")} asChild={true}>
+        <Link href={route}>
+          <span className={cn("mr-4", pathname === route && "text-primary")} >
+            { icon }
+          </span>
+          { name }
+        </Link>
+      </Button>
+    )
+  }
+  
 }
 

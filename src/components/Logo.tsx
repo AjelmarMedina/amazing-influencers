@@ -7,7 +7,7 @@ const montserrat = Montserrat({ subsets: ["latin"] });
 
 export default function AmazingInfluencers({ className }: React.HTMLAttributes<HTMLElement>) {
   return (
-    <Button variant={"ghost"} className={cn(montserrat.className, "hover:bg-transparent text-xl font-semibold")} asChild={true}>
+    <Button variant={"ghost"} className={cn(montserrat.className, "hover:bg-transparent text-xl font-semibold", className)} asChild={true}>
       <Link href={"/"} >
         <h1 className="w-max h-full text-base">
           Amazing <span className="text-primary">Influencers</span>
