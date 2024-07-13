@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { BanknoteIcon, CheckIcon, FileTextIcon, GiftIcon, HexagonIcon, PackageIcon, ShoppingBagIcon, StarIcon, StoreIcon, UploadIcon } from "lucide-react";
+import { BanknoteIcon, CheckIcon, FileTextIcon, GiftIcon, PackageIcon, ShoppingBagIcon, StarIcon, StoreIcon, UploadIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from 'next/navigation';
 import React from "react";
@@ -46,11 +46,6 @@ export default function Sidebar({ className }: React.HtmlHTMLAttributes<HTMLElem
           icon: (<StoreIcon />),
         },
         {
-          name: "Widgets",
-          route: "/widgets",
-          icon: (<HexagonIcon />),
-        },
-        {
           name: "Package Inserts",
           route: "/package",
           icon: (<PackageIcon />),
@@ -92,7 +87,7 @@ export default function Sidebar({ className }: React.HtmlHTMLAttributes<HTMLElem
       )}>
         <section className="px-8 flex-row">
           <Button variant={"ghost"} className={cn("w-full text-start justify-start", pathname === "/reviews" && "bg-primary/15")} asChild={true}>
-            <Link href={"/reviews"}>
+            <Link href={"/dashboard/reviews"}>
               <StarIcon className={cn("mr-4", pathname === "/reviews" && "text-primary")} /> Reviews
             </Link>
           </Button>

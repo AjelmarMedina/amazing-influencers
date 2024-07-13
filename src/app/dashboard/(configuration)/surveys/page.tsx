@@ -8,7 +8,16 @@ import {
   TableHeader,
   TableRow
 } from "@/components/ui/table";
-import { AreaChartIcon, DownloadIcon, ExternalLinkIcon, InfoIcon, PlayIcon, PlusIcon, SquarePenIcon, TrashIcon } from "lucide-react";
+import {
+  AreaChartIcon,
+  DownloadIcon,
+  ExternalLinkIcon,
+  InfoIcon,
+  PlayIcon,
+  PlusIcon,
+  SquarePenIcon,
+  TrashIcon
+} from "lucide-react";
 
 type surveysData = [
   {
@@ -95,9 +104,11 @@ export default function Page() {
           ))}
         </TableBody>
       </Table>
-      <section className="shadow-md rounded-xl bg-white p-6 flex flex-row justify-start">
-        <InfoIcon className="text-white mr-4 inline" fill="#20c997" />
-        To test surveys, use order number <span className="text-[#DAB42B]">888-5049177-9546820</span> for any marketplace. 
+      <section className="shadow-md rounded-xl bg-white p-6 flex flex-row justify-between items-center">
+        <div className="flex flex-row items-center">
+          <InfoIcon className="text-white mr-4 inline" fill="#20c997" />
+          <p>To test surveys, use order number <span className="text-[#DAB42B]">888-5049177-9546820</span> for any marketplace. </p>
+        </div>
         <Button onClick={() => navigator.clipboard.writeText("888-5049177-9546820")}>
           Copy Order Number
         </Button>
