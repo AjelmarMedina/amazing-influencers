@@ -50,7 +50,7 @@ export default function Login() {
   
     function onSubmit(values: z.infer<typeof formSchema>) {
       // ✅ This will be type-safe and validated.
-      router.push("/reviews")
+      router.push("/dashboard/reviews")
     }
   
     return (

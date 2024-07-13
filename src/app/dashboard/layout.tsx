@@ -23,21 +23,23 @@ export default function Layout({
         </SheetContent>
         <aside className="w-full h-full">
           <header className="w-full h-20 min-h-20 z-10 border-b border-[#343A40] border-opacity-25 flex flex-row justify-between items-center py-2 px-4">
-            <SheetTrigger className="block md:hidden">
+            <SheetTrigger className="visible md:invisible">
               <MenuIcon />
             </SheetTrigger>
             <AmazingInfluencers className="block md:hidden" />
-            <div className="flex flex-row space-x-2">
-              <Button variant={"ghost"}>
+            <div className="flex flex-row space-x-4">
+              <Button variant={"ghost"} className="w-10 h-10 relative px-0">
                 <BellIcon />
+                <span className="absolute block w-3 h-3 rounded-full bg-red-500 border border-white top-0 right-0" />
               </Button>
-              <Button variant={"ghost"} className="hover:bg-transparent hover:opacity-90">
+              <Button variant={"ghost"} className="relative hover:bg-transparent hover:opacity-90 px-0">
                 <Image 
                   alt="Profile Picture"
                   src={"/dashboard/profile-placeholder.png"}
                   width={40}
                   height={40}
                 />
+                <span className="absolute block w-3 h-3 rounded-full bg-green-500 border border-white bottom-0 right-0" />
               </Button>
             </div>
           </header>

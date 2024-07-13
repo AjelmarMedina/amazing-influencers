@@ -15,7 +15,7 @@ type SidebarLink = {
 }
 
 export default function Sidebar({ className }: React.HtmlHTMLAttributes<HTMLElement>) {
-  const pathname = usePathname();
+  const pathname = usePathname().replace("/dashboard", "");
   const features = [
     {
       section: "configuration",
@@ -135,7 +135,7 @@ export default function Sidebar({ className }: React.HtmlHTMLAttributes<HTMLElem
   function SidebarButton({ name, route, icon }: SidebarLink) {
     return (
       <Button variant={"ghost"} className={cn("w-full text-start justify-start", pathname === route && "bg-primary/15")} asChild={true}>
-        <Link href={route}>
+        <Link href={`/dashboard${route}`}>
           <span className={cn("mr-4", pathname === route && "text-primary")} >
             { icon }
           </span>
