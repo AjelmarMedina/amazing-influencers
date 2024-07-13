@@ -43,51 +43,53 @@ export default function Page() {
           Create Product
         </Button>
       </header>
-      <Table className="shadow-md rounded-xl">
-        <TableHeader className="bg-[#F3F4F6]">
-          <TableRow className="text-[#343A40] font-bold">
-            <TableCell>
-              Name
-            </TableCell>
-            <TableCell>
-              Type
-            </TableCell>
-            <TableCell>
-              Actions
-            </TableCell>
-          </TableRow>
-        </TableHeader>
-        <TableBody className="bg-white">
-          {data.map((row, index) => (
-            <TableRow key={index} className="font-medium">
-              <TableCell className="flex flex-row">
-                <Image 
-                  alt="Product Image"
-                  src={row.image}
-                  width={48}
-                  height={48}
-                  className="mr-4"
-                />
-                <div className="flex flex-col justify-start">
-                  <p className="text-base">{row.product}</p>
-                  <p className="text-sm">ID: <span className="bg-F0F0F0 text-red-500">{row.id}</span></p>
-                </div>
+      <div className="shadow-md rounded-xl overflow-hidden">
+        <Table className="">
+          <TableHeader className="bg-[#F3F4F6]">
+            <TableRow className="text-[#343A40] font-bold">
+              <TableCell>
+                Name
               </TableCell>
               <TableCell>
-                {row.type}
+                Type
               </TableCell>
               <TableCell>
-                <Button variant={"ghost"} className="">
-                  <PenBox/>
-                </Button>
-                <Button variant={"ghost"} className="text-red-500 hover:text-red-500/90">
-                  <TrashIcon/>
-                </Button>
+                Actions
               </TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody className="bg-white">
+            {data.map((row, index) => (
+              <TableRow key={index} className="font-medium">
+                <TableCell className="flex flex-row items-center">
+                  <Image
+                    alt="Product Image"
+                    src={row.image}
+                    width={48}
+                    height={48}
+                    className="mr-4 min-w-12 max-h-12 aspect-square"
+                  />
+                  <div className="flex flex-col justify-start">
+                    <p className="text-base">{row.product}</p>
+                    <p className="text-sm">ID: <span className="bg-F0F0F0 text-red-500">{row.id}</span></p>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  {row.type}
+                </TableCell>
+                <TableCell>
+                  <Button variant={"ghost"} className="">
+                    <PenBox/>
+                  </Button>
+                  <Button variant={"ghost"} className="text-red-500 hover:text-red-500/90">
+                    <TrashIcon/>
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   )
 }
