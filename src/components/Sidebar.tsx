@@ -82,7 +82,7 @@ export default function Sidebar({ className }: React.HtmlHTMLAttributes<HTMLElem
 
   return (
     <aside
-      className={cn("max-w-72 w-72 min-w-72 h-screen min-h-screen max-h-screen flex flex-col items-stretch shadow-lg z-10", className)}
+      className={cn("max-w-64 w-64 h-screen min-h-screen max-h-screen flex flex-col items-stretch shadow-lg z-10", className)}
     >
       <section className="flex justify-center items-center p-6 space-x-0 border-b *:border-[#343A40] *:border-opacity-25">
         <AmazingInfluencers />
