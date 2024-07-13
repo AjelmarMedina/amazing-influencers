@@ -23,10 +23,8 @@ export default function Layout({
         </SheetContent>
         <aside className="w-full h-full">
           <header className="w-full h-20 min-h-20 z-10 border-b border-[#343A40] border-opacity-25 flex flex-row justify-between items-center py-2 px-4">
-            <SheetTrigger>
-              <Button variant={"ghost"} className="block md:hidden">
-                <MenuIcon />
-              </Button>
+            <SheetTrigger className="block md:hidden">
+              <MenuIcon />
             </SheetTrigger>
             <AmazingInfluencers className="block md:hidden" />
             <div className="flex flex-row space-x-2">
