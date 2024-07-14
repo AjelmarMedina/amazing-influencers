@@ -44,7 +44,7 @@ export default function Layout({
             </div>
           </header>
           <main className="overflow-y-auto overflow-x-hidden bg-[#F5FAFF] w-full h-full *:w-full *:h-full z-0">
-            <div className="px-4 md:px-8 lg:px-10 py-6 md:py-8">
+            <div className=" *:px-4 *:md:px-8 *:lg:px-10 *:py-6 *:md:py-8">
               {children}
             </div>
           </main>
