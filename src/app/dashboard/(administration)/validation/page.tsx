@@ -1,6 +1,5 @@
 "use client"
 
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -8,114 +7,56 @@ import {
   TableHeader,
   TableRow
 } from "@/components/ui/table";
-import {
-  AreaChartIcon,
-  DownloadIcon,
-  ExternalLinkIcon,
-  InfoIcon,
-  PlayIcon,
-  PlusIcon,
-  SquarePenIcon,
-  TrashIcon
-} from "lucide-react";
 
-type surveysData = [
-  {
-    name: string;
-    started: number;
-    completed: number;
-    ratio: number;
-    code: string;
-  }
-]
+type ValidationSchema = {
+  date: string;
+  fullName: string;
+  purchase: string;
+  giveaway: string;
+  orderNum: string;
+  marketplace: string;
+}
 
 export default function Page() {
-  const data: surveysData = [
-    {
-      name: "my survey",
-      started: 1,
-      completed: 0,
-      ratio: 0.0,
-      code: "3f5ed2",
-    }
+  const data: Array<ValidationSchema> = [
   ]
 
   return (
     <div className="max-w-full flex flex-col w-full space-y-4">
-      <header className="flex flex-row justify-between">
+      <header className="flex flex-col items-stretch space-y-4">
         <h1 className="font-bold text-2xl">Surveys</h1>
-        <Button className="space-x-2">
-          <PlusIcon />
-          Create Survey
-        </Button>
+        <p>
+          When manual validation is selected on a marketplace, the validation center is where you manually validate the legitimacy of submitted survey responses. Ensure that the submitted order number matches an order number on your marketplace before clicking the &#34;Validate&#34; button. Clicking the validate button will fire all integration associated with the survey that the respondent completed.
+        </p>
       </header>
-      <div className="shadow-md rounded-xl overflow-auto">
-        <Table className="shadow-md rounded-xl md:table-fixed">
+      <section className="shadow-md rounded-xl w-full overflow-hidden grid">
+        <Table className="w-full table-auto text-nowrap">
           <TableHeader className="bg-[#F3F4F6]">
               <TableRow className="text-[#343A40] font-bold">
-                <TableCell>Name</TableCell>
-                <TableCell>Started</TableCell>
-                <TableCell>Completed</TableCell>
-                <TableCell>Ratio</TableCell>
-                <TableCell>Analytics</TableCell>
-                <TableCell>Code</TableCell>
-                <TableCell>Edit</TableCell>
-                <TableCell>URL</TableCell>
-                <TableCell>QR Code</TableCell>
+                <TableCell>Date</TableCell>
+                <TableCell>Full Name</TableCell>
+                <TableCell>Product Purchased</TableCell>
+                <TableCell>Giveaway Selected</TableCell>
+                <TableCell>Order Number</TableCell>
+                <TableCell>Marketplace</TableCell>
                 <TableCell></TableCell>
               </TableRow>
           </TableHeader>
           <TableBody className="bg-white">
+            {!data.length && (
+              <TableRow>
+                  <TableCell className="py-4 text-center" colSpan={7}>
+                    No reviews in need of validation
+                  </TableCell>
+              </TableRow>
+            )}
             {data.map((row, index) => (
               <TableRow key={index} className="font-medium">
-                <TableCell className="">{row.name}</TableCell>
-                <TableCell>{row.started}</TableCell>
-                <TableCell>{row.completed}</TableCell>
-                <TableCell>{row.ratio.toFixed(2)}</TableCell>
-                <TableCell>
-                  <Button variant={"ghost"} className="px-2">
-                    <AreaChartIcon />
-                  </Button>
-                </TableCell>
-                <TableCell className="text-red-500">{row.code}</TableCell>
-                <TableCell>
-                  <Button variant={"ghost"} className="px-2">
-                    <SquarePenIcon />
-                  </Button>
-                </TableCell>
-                <TableCell>
-                  <Button variant={"ghost"} className="px-2">
-                    <ExternalLinkIcon />
-                  </Button>
-                </TableCell>
-                <TableCell>
-                  <Button variant={"ghost"} className="px-2">
-                    <DownloadIcon />
-                  </Button>
-                </TableCell>
-                <TableCell>
-                  <div className="flex flex-row flex-wrap">
-                    <Button variant={"ghost"} className="text-red-500 hover:text-red-500/90 px-2">
-                      <TrashIcon/>
-                    </Button>
-                    <Button variant={"ghost"} className="text-green-500 hover:text-green-500/90 px-2">
-                      <PlayIcon/>
-                    </Button>
-                  </div>
-                </TableCell>
+                {/* TODO: Table Row */}
               </TableRow>
             ))}
           </TableBody>
         </Table>
-      </div>
-      <section className="shadow-md rounded-xl bg-white p-6 flex flex-col md:flex-row justify-center md:justify-between space-y-4 md:space-y-0 md:items-center">
-        <div className="flex flex-col md:flex-row justify-center md:items-center space-y-4 md:space-y-0 md:space-x-4">
-          <InfoIcon className="text-white block self-center" fill="#20c997" />
-          <p>To test surveys, use order number <span className="text-[#DAB42B]">888-5049177-9546820</span> for any marketplace. </p>
-        </div>
-        <Button onClick={() => navigator.clipboard.writeText("888-5049177-9546820")}>
-          Copy Order Number
-        </Button>
       </section>
     </div>
   )
