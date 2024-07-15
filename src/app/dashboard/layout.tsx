@@ -18,8 +18,8 @@ export default function Layout({
     <Sheet>
       <div className={cn(lato.className, "w-full h-screen max-w-[100%] flex flex-row justify-between overflow-hidden")}>
         <Sidebar className="hidden lg:flex" />
-        <SheetContent side={"left"}>
-          <Sidebar />
+        <SheetContent side={"left"} className="p-0">
+          <Sidebar className="w-full max-w-full"/>
         </SheetContent>
         <aside className="w-full max-w-full h-full flex flex-col items-stretch">
           <header className="h-20 min-h-20 z-10 border-b border-[#343A40] border-opacity-25 flex flex-row justify-between items-center py-2 px-4">
