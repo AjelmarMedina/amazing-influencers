@@ -1,6 +1,6 @@
 "use client"
 
-import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -8,12 +8,6 @@ import {
   TableHeader,
   TableRow
 } from "@/components/ui/table";
-import {
-  InfoIcon,
-  PlusIcon
-} from "lucide-react";
-
-
 
 export default function Page() {
   interface OrderSchema {
@@ -35,12 +29,17 @@ export default function Page() {
   return (
     <div className="max-w-full flex flex-col w-full space-y-4">
       <header className="flex flex-row justify-between">
-        <h1 className="font-bold text-2xl">Surveys</h1>
-        <Button className="space-x-2">
-          <PlusIcon />
-          Create Survey
-        </Button>
+        <h1 className="font-bold text-2xl">Orders</h1>
       </header>
+      <section className="shadow-md bg-white rounded-xl flex flex-col items-stretch">
+        <header className="p-6 bg-[rgba(243,244,246,0.8)] justify-start">
+          <h2 className="font-bold text-base">Order search</h2>
+        </header>
+        <div className="p-6 flex flex-col items-stretch space-y-4">
+          <p> Check if you&apost;ve imported a specific order by searching for its source platform Order ID, name, email, or phone. </p>
+          <Input placeholder="Search here..." />
+        </div>
+      </section>
       <section className="shadow-md rounded-xl w-full overflow-hidden grid">
         <Table className="w-full table-auto text-nowrap">
           <TableHeader className="bg-[#F3F4F6]">
@@ -73,15 +72,6 @@ export default function Page() {
             ))}
           </TableBody>
         </Table>
-      </section>
-      <section className="shadow-md rounded-xl bg-white p-6 flex flex-col md:flex-row justify-center md:justify-between space-y-4 md:space-y-0 md:items-center">
-        <div className="flex flex-col md:flex-row justify-center md:items-center space-y-4 md:space-y-0 md:space-x-4">
-          <InfoIcon className="text-white block self-center" fill="#20c997" />
-          <p>To test surveys, use order number <span className="text-[#DAB42B]">888-5049177-9546820</span> for any marketplace. </p>
-        </div>
-        <Button onClick={() => navigator.clipboard.writeText("888-5049177-9546820")}>
-          Copy Order Number
-        </Button>
       </section>
     </div>
   )
