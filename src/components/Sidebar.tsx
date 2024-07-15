@@ -47,7 +47,7 @@ export default function Sidebar({ className }: React.HtmlHTMLAttributes<HTMLElem
         },
         {
           name: "Package Inserts",
-          route: "/package",
+          route: "/packages",
           icon: (<PackageIcon />),
         },
       ]
