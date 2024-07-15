@@ -25,7 +25,7 @@ const formSchema = z.object({
   style: z.string().min(2),
   nickname: z.string().min(2).max(128),
   survey: z.string().min(2),
-  logo: z.instanceof(FileList, { message: "Logo is required" })
+  logo: z.instanceof(Array<File>, { message: "Logo is required" })
     .refine((file) => file?.[0]?.size <= MAX_FILE_SIZE, "Max size is 50MB.")
     .refine((file) => ACCEPTED_IMAGE_TYPES.includes(file?.[0]?.type), "Only jpeg, jpg, png, webp formats are supported."),
   bgColor: z.string({ required_error: "Please choose a color" }),

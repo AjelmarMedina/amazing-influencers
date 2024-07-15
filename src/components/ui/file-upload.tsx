@@ -97,61 +97,6 @@ export const FileUploader = forwardRef<
       [value, onValueChange]
     );
 
-    const handleKeyDown = useCallback(
-      (e: React.KeyboardEvent<HTMLDivElement>) => {
-        e.preventDefault();
-        e.stopPropagation();
-
-        if (!value) return;
-
-        const moveNext = () => {
-          const nextIndex = activeIndex + 1;
-          setActiveIndex(nextIndex > value.length - 1 ? 0 : nextIndex);
-        };
-
-        const movePrev = () => {
-          const nextIndex = activeIndex - 1;
-          setActiveIndex(nextIndex < 0 ? value.length - 1 : nextIndex);
-        };
-
-        const prevKey =
-          orientation === "horizontal"
-            ? direction === "ltr"
-              ? "ArrowLeft"
-              : "ArrowRight"
-            : "ArrowUp";
-
-        const nextKey =
-          orientation === "horizontal"
-            ? direction === "ltr"
-              ? "ArrowRight"
-              : "ArrowLeft"
-            : "ArrowDown";
-
-        if (e.key === nextKey) {
-          moveNext();
-        } else if (e.key === prevKey) {
-          movePrev();
-        } else if (e.key === "Enter" || e.key === "Space") {
-          if (activeIndex === -1) {
-            dropzoneState.inputRef.current?.click();
-          }
-        } else if (e.key === "Delete" || e.key === "Backspace") {
-          if (activeIndex !== -1) {
-            removeFileFromSet(activeIndex);
-            if (value.length - 1 === 0) {
-              setActiveIndex(-1);
-              return;
-            }
-            movePrev();
-          }
-        } else if (e.key === "Escape") {
-          setActiveIndex(-1);
-        }
-      },
-      [value, activeIndex, removeFileFromSet]
-    );
-
     const onDrop = useCallback(
       (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
         const files = acceptedFiles;
@@ -215,13 +160,68 @@ export const FileUploader = forwardRef<
     const opts = dropzoneOptions
       ? dropzoneOptions
       : { accept, maxFiles, maxSize, multiple };
-
+    
     const dropzoneState = useDropzone({
       ...opts,
       onDrop,
       onDropRejected: () => setIsFileTooBig(true),
       onDropAccepted: () => setIsFileTooBig(false),
     });
+
+    const handleKeyDown = useCallback(
+      (e: React.KeyboardEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (!value) return;
+
+        const moveNext = () => {
+          const nextIndex = activeIndex + 1;
+          setActiveIndex(nextIndex > value.length - 1 ? 0 : nextIndex);
+        };
+
+        const movePrev = () => {
+          const nextIndex = activeIndex - 1;
+          setActiveIndex(nextIndex < 0 ? value.length - 1 : nextIndex);
+        };
+
+        const prevKey =
+          orientation === "horizontal"
+            ? direction === "ltr"
+              ? "ArrowLeft"
+              : "ArrowRight"
+            : "ArrowUp";
+
+        const nextKey =
+          orientation === "horizontal"
+            ? direction === "ltr"
+              ? "ArrowRight"
+              : "ArrowLeft"
+            : "ArrowDown";
+
+        if (e.key === nextKey) {
+          moveNext();
+        } else if (e.key === prevKey) {
+          movePrev();
+        } else if (e.key === "Enter" || e.key === "Space") {
+          if (activeIndex === -1) {
+            dropzoneState.inputRef.current?.click();
+          }
+        } else if (e.key === "Delete" || e.key === "Backspace") {
+          if (activeIndex !== -1) {
+            removeFileFromSet(activeIndex);
+            if (value.length - 1 === 0) {
+              setActiveIndex(-1);
+              return;
+            }
+            movePrev();
+          }
+        } else if (e.key === "Escape") {
+          setActiveIndex(-1);
+        }
+      },
+      [value, orientation, direction, activeIndex, dropzoneState.inputRef, removeFileFromSet]
+    );
 
     return (
       <FileUploaderContext.Provider
@@ -270,7 +270,6 @@ export const FileUploaderContent = forwardRef<
     <div
       className={cn("w-full px-1")}
       ref={containerRef}
-      aria-description="content file holder"
     >
       <div
         {...props}

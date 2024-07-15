@@ -127,83 +127,83 @@ function UploadForm() {
 
   return (
     <Form {...form}>
-    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-      <FormField
-        control={form.control}
-        name="platform"
-        render={({ field }) => (
-          <FormItem>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select the platform" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                <SelectItem value="Amazon">Amazon</SelectItem>
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name="values"
-        render={({ field }) => (
-          <FormItem>
-            <FileUploader
-              value={field.value}
-              onValueChange={field.onChange}
-              dropzoneOptions={dropzone}
-              reSelect={true}
-            > 
-              {!field.value.length && (
-                <FileInput>
-                  <div className="flex flex-col items-center justify-center h-32 w-full border bg-background rounded-md">
-                    <StickyNoteIcon strokeWidth={1} />
-                    <p className="text-gray-400">Drag and drop your CSV or <span className="text-primary">click here</span></p>
-                  </div>
-                </FileInput>
-              )}
-              <FileUploaderContent className="w-full flex items-center justify-center flex-row gap-2">
-                {field.value?.map((file, i) => (
-                  <FileUploaderItem
-                    key={i}
-                    index={i}
-                    className="size-20 p-0 rounded-md overflow-hidden"
-                    aria-roledescription={`file ${i + 1} containing ${file.name}`}
-                  >
-                    <PaperclipIcon className="h-4 w-4 stroke-current" />
-                    <span>{file.name}</span>
-                  </FileUploaderItem>
-                ))}
-              </FileUploaderContent>
-            </FileUploader>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name="campaign"
-        render={({ field }) => (
-          <FormItem>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select the campaign" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <Button type="submit">Submit</Button>
-    </form>
-  </Form>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 flex flex-col items-stretch">
+        <FormField
+          control={form.control}
+          name="platform"
+          render={({ field }) => (
+            <FormItem>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select the platform" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="Amazon">Amazon</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="values"
+          render={({ field }) => (
+            <FormItem>
+              <FileUploader
+                value={field.value}
+                onValueChange={field.onChange}
+                dropzoneOptions={dropzone}
+                reSelect={true}
+              > 
+                {!field.value?.length && (
+                  <FileInput>
+                    <div className="flex flex-col items-center text-center justify-center h-32 w-full border bg-background rounded-md">
+                      <StickyNoteIcon strokeWidth={1} />
+                      <p className="text-gray-400">Drag and drop your CSV or <span className="text-primary">click here</span></p>
+                    </div>
+                  </FileInput>
+                )}
+                <FileUploaderContent className="w-full flex items-center justify-center flex-row gap-2">
+                  {field.value?.map((file, i) => (
+                    <FileUploaderItem
+                      key={i}
+                      index={i}
+                      className="size-20 p-0 rounded-md overflow-hidden"
+                      aria-roledescription={`file ${i + 1} containing ${file.name}`}
+                    >
+                      <PaperclipIcon className="h-4 w-4 stroke-current" />
+                      <span>{file.name}</span>
+                    </FileUploaderItem>
+                  ))}
+                </FileUploaderContent>
+              </FileUploader>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="campaign"
+          render={({ field }) => (
+            <FormItem>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select the campaign" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button type="submit" className="md:self-start">Submit</Button>
+      </form>
+    </Form>
   )
 }
