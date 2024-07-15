@@ -36,7 +36,7 @@ export default function Page() {
           <h2 className="font-bold text-base">Order search</h2>
         </header>
         <div className="p-6 flex flex-col items-stretch space-y-4">
-          <p> Check if you&apost;ve imported a specific order by searching for its source platform Order ID, name, email, or phone. </p>
+          <p> Check if you&apos;ve imported a specific order by searching for its source platform Order ID, name, email, or phone. </p>
           <Input placeholder="Search here..." />
         </div>
       </section>
