@@ -64,7 +64,10 @@ export default function Layout({
             </Button>
           ))}
         </header>
-        <div className="p-6 flex flex-col items-stretch">
+        <div className={cn("p-6 flex flex-col items-stretch text-[#343A40]",
+          "*:flex *:flex-col *:items-stretch *:space-y-4"
+          )}
+        >
           {children}
         </div>
       </section>
