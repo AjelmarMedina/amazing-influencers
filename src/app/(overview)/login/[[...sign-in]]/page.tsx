@@ -4,10 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useSignIn } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from 'next/navigation';
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -39,6 +40,10 @@ export default function Login() {
   )
 
   function RegisterForm() {
+    const {isLoaded, signIn, setActive} = useSignIn();
+    const [clerkError, setClerkError] = useState("");
+    const router = useRouter();
+    
     const form = useForm<z.infer<typeof formSchema>>({
       resolver: zodResolver(formSchema),
       defaultValues: {
@@ -48,9 +53,31 @@ export default function Login() {
       },
     })
   
-    function onSubmit(values: z.infer<typeof formSchema>) {
+    async function onSubmit(values: z.infer<typeof formSchema>) {
       // ✅ This will be type-safe and validated.
-      router.push("/dashboard/reviews")
+      const emailAddress = values.email;
+      const password = values.password;
+
+      if (!isLoaded) {
+        return;
+      }
+  
+      try {
+        const result = await signIn.create({
+          identifier: emailAddress,
+          password,
+        });
+        if (result.status === "complete") {
+          console.log(result);
+          await setActive({session: result.createdSessionId});
+          router.push("/dashboard");
+        } else {
+          console.log(result);
+        }
+      } catch (err: any) {
+        console.log(JSON.stringify(err, null, 2));
+        setClerkError(err.errors[0].message);
+      }
     }
   
     return (
@@ -96,7 +123,11 @@ export default function Login() {
               </FormItem>
             )}
           />
-          
+          {clerkError && (
+            <FormLabel className="text-red-500">
+              {clerkError}
+            </FormLabel>
+          )}
           <Button type="submit" className="bg-primary hover:bg-primary/90">
             Submit
           </Button>
