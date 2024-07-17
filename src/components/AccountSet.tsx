@@ -54,8 +54,8 @@ export default function AccountSet({ className }: HTMLAttributes<HTMLElement>) {
             <DropdownMenuItem
               asChild
               className="hover:cursor-pointer"
-              onClick={() => {
-                session?.end();
+              onClick={async () => {
+                await session?.end();
                 router.push("/");
               }}
             >
