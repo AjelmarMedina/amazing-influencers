@@ -1,5 +1,3 @@
-"use client";
-
 import AccountSet from "@/components/AccountSet";
 import AmazingInfluencers from "@/components/Logo";
 import Sidebar from "@/components/Sidebar";
