@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@clerk/nextjs": "^5.2.4",
     "@hookform/resolvers": "^3.9.0",
     "@radix-ui/react-aspect-ratio": "^1.1.0",
     "@radix-ui/react-checkbox": "^1.1.1",
@@ -26,7 +27,10 @@
     "@tabler/icons-react": "^3.10.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "dotenv": "^16.4.5",
+    "input-otp": "^1.2.4",
     "lucide-react": "^0.407.0",
+    "mongodb": "^6.8.0",
     "next": "14.2.4",
     "react": "^18",
     "react-dom": "^18",
