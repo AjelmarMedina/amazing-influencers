@@ -28,8 +28,8 @@ export default function Page() {
 
 const formSchema = z.object({
   confirmation: z
-    .enum(['true', 'false']).transform((value) => value === 'true')
-    .optional(),
+    .union([z.enum(['true', 'false']), z.boolean()])
+    ,
   replyAddress: z
     .union([z.string().email(), z.string().min(4, "Too short"), z.string().length(0), z.string().max(256, "Too long")])
     .optional()
@@ -48,7 +48,7 @@ function AccountForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      confirmation: true,
+      confirmation: "true",
       replyAddress: "",
       responseSubject: "",
       responseTemplate: "",
@@ -57,7 +57,6 @@ function AccountForm() {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     // ✅ This will be type-safe and validated.
-    if (!(values.responseSubject && values.responseSubject)) return;
     console.log(values)
   }
 
@@ -80,15 +79,15 @@ function AccountForm() {
               <FormDescription className="font-base">
                 Enabling this feature will send a confirmation email to all users who submit a survey thanking them for their feedback.
               </FormDescription>
-              <Select onValueChange={field.onChange} defaultValue={`${field.value}`}>
+              <Select onValueChange={field.onChange} defaultValue={`true`}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Yes" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="true">Yes</SelectItem>
-                  <SelectItem value="false">No</SelectItem>
+                  <SelectItem value={'true'} defaultChecked>Yes</SelectItem>
+                  <SelectItem value={'false'}>No</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />

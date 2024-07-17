@@ -57,9 +57,11 @@ export default function Layout({
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link href={"/dashboard"}>
-                      <PanelsTopLeftIcon className="mr-2" /> Dashboard
-                    </Link>
+                    <Button variant={"ghost"} asChild>
+                      <Link href={"/dashboard"}>
+                        <PanelsTopLeftIcon className="mr-2" /> Dashboard
+                      </Link>
+                    </Button>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <UserIcon className="mr-2" /> Log out
