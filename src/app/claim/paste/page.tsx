@@ -33,7 +33,7 @@ function Paste() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const review = JSON.parse(atob(searchParams.get("review") ?? ""));
+  const review = JSON.parse(Buffer.from(searchParams.get("review") ?? "", "base64url").toString());
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

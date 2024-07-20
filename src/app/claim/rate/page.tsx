@@ -59,7 +59,7 @@ function Rate() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     // ✅ This will be type-safe and validated.
     const params = new URLSearchParams();
-    const base64 = btoa(JSON.stringify(values));
+    const base64 = Buffer.from(JSON.stringify(values)).toString("base64url");
     params.set("review", base64);
     router.push(`${pathname.replace("rate", "paste")}?${params.toString()}`)
   }

@@ -16,20 +16,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import Image from "next/image"
-import { Suspense } from "react"
-
-const orders = [
-  {
-    orderId: "888-5049177-9546820",
-    name: "Hydrating Serum",
-  },
-]
-
-const formSchema = z.object({
-  orderNum: z.string().min(16).max(16).refine((val) => orders.find((order) => order.orderId === val), 
-    { message: "Order doesn't exist" }
-  ),
-})
+import { Suspense, useState } from "react"
 
 export default function Page() {
   return (
@@ -39,11 +26,16 @@ export default function Page() {
   )
 }
 
+const formSchema = z.object({
+  orderNum: z.string({ required_error: "Enter your Order Number" }).trim(),
+})
+
 function Claim() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams()
   const orderNum = searchParams.get('code');
+  const [submitDisabled, setSubmitDisabled] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -54,9 +46,8 @@ function Claim() {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     // ✅ This will be type-safe and validated.
-    const params = new URLSearchParams();
-    params.set("order", values.orderNum);
-    router.push(`${pathname}/rate?${params.toString()}`)
+    setSubmitDisabled(true);
+    handleOrderFetch(values.orderNum.trim());
   }
 
   return(
@@ -86,8 +77,77 @@ function Claim() {
             </FormItem>
           )}
         />
-        <Button type="submit" className="self-end bg-primary hover:bg-primary/90">Next &rarr;</Button>
+        <Button
+          type="submit"
+          className="self-end"
+          disabled={submitDisabled}
+        >
+          Next &rarr;
+        </Button>
       </form>
     </Form>
   )
+
+  async function handleOrderFetch(orderNum: string) {
+    // prepare request
+    const apiUrl = "/api/orders/get";
+    const requestData = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        orderNum
+      }),
+    };
+
+    try {
+      // Get order from database
+      const response = await fetch(apiUrl, requestData);
+      const order = await response.json();
+
+      // Order not found
+      if (!order) throw form.setError("orderNum", {message: "Order not found..."});
+      // Error on POST
+      if (!response.ok) throw form.setError("orderNum", {message: "Something went wrong..."});
+  
+      handleSurveyFetch(order.surveyCode, orderNum)
+    } catch (err) {
+      setSubmitDisabled(false);
+    }
+  }
+
+  async function handleSurveyFetch(surveyCode: string, orderNum: string) {
+    // prepare request
+    const apiUrl = "/api/surveys/get";
+    const requestData = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        surveyCode
+      }),
+    };
+
+    try {
+      // Get order from database
+      const response = await fetch(apiUrl, requestData);
+      const survey = await response.json();
+
+      // Order not found
+      if (!survey) throw form.setError("orderNum", {message: "Surveys for your product order are not active..."});
+      // Error on POST
+      if (!response.ok) throw form.setError("orderNum", {message: "Something went wrong..."});
+  
+      // Pass orderNum as param to next step
+      const params = new URLSearchParams();
+      params.set("order", orderNum ?? "");
+      router.push(`${pathname}/rate?${params.toString()}`)
+    } catch (err) {
+      setSubmitDisabled(false);
+    }
+  }
+  
+
 }

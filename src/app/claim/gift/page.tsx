@@ -51,7 +51,7 @@ function Gift() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     // ✅ This will be type-safe and validated.
     const params = new URLSearchParams(searchParams);
-    const base64 = btoa(JSON.stringify(values));
+    const base64 = Buffer.from(JSON.stringify(values)).toString("base64url");
     params.append("gift", base64);
     router.push(`${pathname.replace("gift", "shipping")}?${params.toString()}`)
   }

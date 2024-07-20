@@ -41,6 +41,7 @@ const verificationFormSchema = z.object({
 function Register() {
   const {isLoaded, signUp, setActive} = useSignUp();
   const [verifying, setVerifying] = useState(false);
+  const [userInfo, setUserInfo] = useState<z.infer<typeof registerFormSchema>>();
   const [clerkError, setClerkError] = useState("");
 
   const form = useForm<z.infer<typeof registerFormSchema>>({
@@ -58,12 +59,8 @@ function Register() {
   function onSubmit(values: z.infer<typeof registerFormSchema>) {
     // ✅ This will be type-safe and validated.
     setClerkError("");
-    handleSignUp(
-      values.email,
-      values.password,
-      values.firstName,
-      values.lastName,
-    );
+    setUserInfo(values)
+    handleSignUp();
   }
   
   return (
@@ -164,8 +161,15 @@ function Register() {
     </Form>
   )
 
-  async function handleSignUp(emailAddress: string, password: string, firstName: string, lastName: string) {
+  async function handleSignUp() {
+
     if (!isLoaded) return;
+    if (!userInfo) return;
+
+    const emailAddress = userInfo.email;
+    const password = userInfo.password;
+    const firstName = userInfo.firstName;
+    const lastName = userInfo.lastName;
   
     try {
       await signUp.create({
@@ -187,6 +191,7 @@ function Register() {
 
   function VerificationDialog() {
     const router = useRouter();
+    const [submitEnabled, setSubmitEnabled] = useState(false);
   
     const verificationForm = useForm<z.infer<typeof verificationFormSchema>>({
       resolver: zodResolver(verificationFormSchema),
@@ -195,6 +200,7 @@ function Register() {
     })
   
     function onSubmit(values: z.infer<typeof verificationFormSchema>) {
+      setSubmitEnabled(true);
       handleVerify(values.code);
     }
   
@@ -238,7 +244,7 @@ function Register() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full">Submit</Button>
+              <Button type="submit" className="w-full" disabled={submitEnabled}>Submit</Button>
             </form>
           </Form>
         </DialogContent>
@@ -246,22 +252,46 @@ function Register() {
     )
   
     async function handleVerify(code: string) {
+
       if (!isLoaded) return;
+      if (!userInfo) return;
+
+      // Prepare user info
+      const emailAddress = userInfo.email;
+      const company = userInfo.companyName;
+      const firstName = userInfo.firstName;
+      const lastName = userInfo.lastName;
+
+      // Prepare POST request
+      const apiUrl = "/api/users/create";
+      const requestData = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          emailAddress,
+          company,
+          firstName,
+          lastName,
+        }),
+      };
     
-      console.log(code);
-      
       try {
+        // Create user on Clerk API
         const completeSignUp = await signUp.attemptEmailAddressVerification({
           code,
         });
-        if (completeSignUp.status !== "complete") {
-          // console.log(JSON.stringify(completeSignUp, null, 2));
-        }
+        // Create user on database
+        const response = await fetch(apiUrl, requestData); 
+
+        // Error on signup
+        if (completeSignUp.status !== "complete") return console.log(JSON.stringify(completeSignUp, null, 2));
+        // Error on POST
+        if (!response.ok) throw new Error(`POST Error: ${response.status} - ${response.statusText}` );
     
-        if (completeSignUp.status === "complete") {
-          await setActive({session: completeSignUp.createdSessionId});
-          router.push("/");
-        }
+        await setActive({session: completeSignUp.createdSessionId});
+        router.push("/");
       } catch (err) {
         console.log("Error:", JSON.stringify(err, null, 2));
       }

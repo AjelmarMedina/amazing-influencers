@@ -1,0 +1,87 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  email     String @unique
+  company   String
+  firstName String
+  lastName  String
+}
+
+model reviews {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  rating       Int
+  reviewerInfo Reviewer
+  review       String
+  shippingInfo Shipping
+  date         DateTime
+  orderNum     String // `orders` - order nums are unique for each purchase
+  giveawayId   String // `giveaways` - selected giveaway
+  surveyId     String // `surveys` - survey conducted for the review
+}
+
+type Reviewer {
+  reviewerName  String
+  reviewerPhone String
+  reviewerEmail String
+}
+
+type Shipping {
+  fullname       String
+  contactName    String
+  email          String
+  address        String[]
+  city           String
+  state_province String
+  zipCode        String
+}
+
+model surveys {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  surveyCode String   @unique
+  name       String
+  started    Int
+  completed  Int
+  ratio      Float
+  productId  String   @unique // `products` - one survey for each product
+  giveaways  String[]
+}
+
+model products {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  productId String
+  Name      String
+  type      String
+  userId    String // `users` - product seller
+}
+
+model giveaways {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  name   String
+  type   String
+  status String
+  userId String // `users`
+}
+
+model orders {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  orderNum    String   @unique
+  date        DateTime
+  email       String
+  fullName    String
+  phone       String
+  marketplace String
+  surveyUrl   String   @unique
+  campaign    String
+  created     DateTime
+  productId   String // `products` - product purcheased for the order
+  surveyCode  String   @unique // `surveys` - survey code is fetched based on the product of the specific order
+  userId      String // `users` - producst ordered from
+}
