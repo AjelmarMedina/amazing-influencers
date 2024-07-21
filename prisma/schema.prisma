@@ -7,24 +7,91 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model users {
-  id        String @id @default(auto()) @map("_id") @db.ObjectId
-  email     String @unique
+model User {
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  email     String     @unique
   company   String
   firstName String
   lastName  String
+  products  Product[]
+  surveys   Survey[]
+  orders    Order[]
+  giveaways Giveaway[]
 }
 
-model reviews {
+model Product {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  productId String
+  name      String
+  type      String
+  userId    String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  orders    Order[]
+  surveys   Survey[]
+}
+
+model Survey {
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  surveyCode  String     @unique
+  name        String
+  started     Int
+  completed   Int
+  ratio       Float
+  userId      String     @db.ObjectId // `products` - product purchased for the order
+  user        User       @relation(fields: [userId], references: [id])
+  productId   String     @db.ObjectId // `products` - product purchased for the order
+  product     Product    @relation(fields: [productId], references: [id])
+  giveawayIds String[]   @db.ObjectId
+  giveaways   Giveaway[] @relation(fields: [giveawayIds], references: [id])
+  orders      Order[]
+  reviews     Review[]
+}
+
+model Giveaway {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  type      String
+  status    String
+  userId    String   @db.ObjectId // `users`
+  user      User     @relation(fields: [userId], references: [id])
+  surveyIds String[] @db.ObjectId
+  surveys   Survey[] @relation(fields: [surveyIds], references: [id])
+  reviews   Review[]
+}
+
+model Order {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  orderNum    String   @unique @db.ObjectId
+  date        DateTime
+  email       String
+  fullName    String
+  phone       String
+  marketplace String
+  campaign    String
+  created     DateTime
+  surveyCode  String   @unique @db.ObjectId // `surveys` - survey code is fetched based on the product of the specific order
+  survey      Survey   @relation(fields: [surveyCode], references: [id])
+  productId   String   @db.ObjectId // `products` - product purchased for the order
+  product     Product  @relation(fields: [productId], references: [id])
+  userId      String   @db.ObjectId // `users` - products ordered from
+  user        User     @relation(fields: [userId], references: [id])
+  review      Review?
+}
+
+model Review {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  orderNum     String // `orders` - order nums are unique for each purchase
   rating       Int
   reviewerInfo Reviewer
   review       String
   shippingInfo Shipping
   date         DateTime
-  orderNum     String // `orders` - order nums are unique for each purchase
-  giveawayId   String // `giveaways` - selected giveaway
-  surveyId     String // `surveys` - survey conducted for the review
+  orderId      String   @unique @db.ObjectId
+  order        Order    @relation(fields: [orderId], references: [id])
+  giveawayId   String   @db.ObjectId // `giveaways` - selected giveaway
+  giveaway     Giveaway @relation(fields: [giveawayId], references: [id])
+  surveyId     String   @db.ObjectId // `surveys` - survey conducted for the review
+  survey       Survey   @relation(fields: [surveyId], references: [id])
 }
 
 type Reviewer {
@@ -34,53 +101,12 @@ type Reviewer {
 }
 
 type Shipping {
-  fullname       String
-  contactName    String
-  email          String
-  address        String[]
-  city           String
-  state_province String
-  zipCode        String
-}
-
-model surveys {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  surveyCode String   @unique
-  name       String
-  started    Int
-  completed  Int
-  ratio      Float
-  productId  String   // `products` - one survey for each product
-  giveaways  String[]
-}
-
-model products {
-  id        String @id @default(auto()) @map("_id") @db.ObjectId
-  productId String
-  name      String
-  type      String
-  userId    String // `users` - product seller
-}
-
-model giveaways {
-  id     String @id @default(auto()) @map("_id") @db.ObjectId
-  name   String
-  type   String
-  status String
-  userId String // `users`
-}
-
-model orders {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  orderNum    String   @unique
-  date        DateTime
-  email       String
-  fullName    String
-  phone       String
-  marketplace String
-  campaign    String
-  created     DateTime
-  productId   String // `products` - product purcheased for the order
-  surveyCode  String   @unique // `surveys` - survey code is fetched based on the product of the specific order
-  userId      String // `users` - producst ordered from
+  fullname      String
+  contactName   String
+  email         String
+  address1      String
+  address2      String?
+  city          String
+  stateProvince String
+  zipCode       String
 }

@@ -1,11 +1,13 @@
 "use client"
 
-import { GiveawaySchema } from "@/app/dashboard/(configuration)/giveaways/page";
-import { SurveySchema } from "@/app/dashboard/(configuration)/surveys/page";
+import { GiveawaySchema } from "@/app/api/giveaways/get/route";
+import { ShippingInfoSchema } from "@/app/api/reviews/create/route";
+import { SurveySchema } from "@/app/api/surveys/get/route";
 import { Button } from "@/components/ui/button";
 import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
 
+import { OrderSchema } from "@/app/api/orders/get/route";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -15,12 +17,12 @@ import { ReviewForm } from '../rate/[survey]/page';
 export default function Rate() {
   const searchParams = useSearchParams();
   const { toast } = useToast();
-  const [encodedReview, encodedSurvey, encodedGift] = [
-    searchParams.get("review"), searchParams.get("survey"), searchParams.get("gift")
+  const [encodedOrder, encodedReview, encodedSurvey, encodedGift, encodedShippingInfo] = [
+    searchParams.get("order"), searchParams.get("review"), searchParams.get("survey"), searchParams.get("gift"), searchParams.get("shipping")
   ];
 
   useEffect(() => {
-    if (!encodedReview || !encodedSurvey || !encodedGift)
+    if (!encodedOrder || !encodedReview || !encodedSurvey || !encodedGift || !encodedShippingInfo)
       toast({
         title: "Something went wrong...",
         description: "Please reload the page.",
@@ -32,10 +34,12 @@ export default function Rate() {
         ),
       });
     else {
+      const order: OrderSchema = JSON.parse(Buffer.from(encodedOrder, "base64url").toString());
       const review: ReviewForm = JSON.parse(Buffer.from(encodedReview, "base64url").toString());
       const survey: SurveySchema = JSON.parse(Buffer.from(encodedSurvey, "base64url").toString());
       const gift: GiveawaySchema = JSON.parse(Buffer.from(encodedGift, "base64url").toString());
-      submitReview(review, survey, gift)
+      const shipping: ShippingInfoSchema = JSON.parse(Buffer.from(encodedShippingInfo, "base64url").toString());
+      submitReview(order, review, survey, gift, shipping)
     }
   })
 
@@ -58,7 +62,7 @@ export default function Rate() {
     </div>
   )
 
-  async function submitReview(submittedReview: ReviewForm, survey: SurveySchema, gift: GiveawaySchema) {
+  async function submitReview(order: OrderSchema, submittedReview: ReviewForm, survey: SurveySchema, gift: GiveawaySchema, shippingInfo: ShippingInfoSchema) {
     // prepare request
     const apiUrl = "/api/reviews/create";
     const requestData = {
@@ -67,9 +71,11 @@ export default function Rate() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        submitReview,
+        order,
+        submittedReview,
         survey,
         gift,
+        shippingInfo,
       }),
     };
 

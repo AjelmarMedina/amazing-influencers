@@ -4,8 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
-import { GiveawaySchema } from "@/app/dashboard/(configuration)/giveaways/page"
-import { SurveySchema } from "@/app/dashboard/(configuration)/surveys/page"
+import { GiveawaySchema } from "@/app/api/giveaways/get/route"
+import { SurveySchema } from "@/app/api/surveys/get/route"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -54,41 +54,9 @@ function Gift() {
       });
     else {
       const survey: SurveySchema = JSON.parse(Buffer.from(encodedSurvey, "base64url").toString())
-      fetchGiveaways(survey.giveaways)
+      setGiveaways(survey.giveaways)
     }
-
-    async function fetchGiveaways(giveaways: string[]) {
-      // prepare request
-      const apiUrl = "/api/products/get";
-      const requestData = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          giveaways
-        }),
-      };
-  
-      try {
-        // Get order from database
-        const response = await fetch(apiUrl, requestData);
-        const giveaways: Array<GiveawaySchema> = await response.json();
-  
-        // Error on POST
-        if (!response.ok) throw new Error(`Error [${response.status}]: ${response.statusText}`);
-        
-        setGiveaways(giveaways);
-      } catch (err) {
-        console.log(err);
-        toast({
-          title: "Something went wrong...",
-          description: "Please reload the page.",
-          variant: "destructive",
-        });
-      }
-    } 
-  })
+  }, [encodedSurvey])
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

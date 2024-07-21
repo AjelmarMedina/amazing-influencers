@@ -1,5 +1,6 @@
 "use client"
 
+import { GiveawaySchema } from "@/app/api/giveaways/get/route";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -14,14 +15,6 @@ import {
   TrashIcon
 } from "lucide-react";
 import Image from "next/image";
-
-export type GiveawaySchema = {
-  id: string
-  name: string
-  type: string
-  status: string
-  userId: string
-}
 
 export default function Page() {
   const data: Array<GiveawaySchema> = [];

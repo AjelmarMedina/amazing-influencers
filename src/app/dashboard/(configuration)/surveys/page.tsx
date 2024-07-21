@@ -1,5 +1,6 @@
 "use client"
 
+import { SurveySchema } from "@/app/api/surveys/get/route";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -18,18 +19,6 @@ import {
   SquarePenIcon,
   TrashIcon
 } from "lucide-react";
-
-export type SurveySchema = {
-  id?: string
-  surveyCode: string
-  name: string
-  started: number
-  completed: number
-  ratio: number
-  productId: string
-  giveaways: string[]
-}
-
 
 export default function Page() {
   const data: Array<SurveySchema> = []

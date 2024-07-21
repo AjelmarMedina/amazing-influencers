@@ -5,8 +5,8 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
-import { OrderSchema } from "@/app/dashboard/(administration)/orders/page"
-import { SurveySchema } from "@/app/dashboard/(configuration)/surveys/page"
+import { OrderSchema } from "@/app/api/orders/get/route"
+import { SurveySchema } from "@/app/api/surveys/get/route"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -35,6 +35,7 @@ const formSchema = z.object({
 })
 
 function Claim({ surveyCode }: { surveyCode: string }) {
+  const params = new URLSearchParams();
   const router = useRouter();
   const pathname = usePathname();
   const { toast } = useToast();
@@ -114,6 +115,8 @@ function Claim({ surveyCode }: { surveyCode: string }) {
       // Error on POST
       if (!response.ok) throw form.setError("orderNum", {message: "Something went wrong..."});
   
+      const encodedOrder = Buffer.from(JSON.stringify(order)).toString("base64url")
+      params.append("order", encodedOrder);
       handleSurveyFetch()
     } catch (err) {
       setSubmitDisabled(false);
@@ -144,11 +147,9 @@ function Claim({ surveyCode }: { surveyCode: string }) {
       if (!response.ok) throw new Error();
   
       // Forward survey to next step
-      const params = new URLSearchParams();
       const encodedSurvey = Buffer.from(JSON.stringify(survey)).toString("base64url")
-      params.set("survey", encodedSurvey);
+      params.append("survey", encodedSurvey);
       router.push(`${pathname}/rate?${params.toString()}`)
-
     } catch (err) {
       console.log(err);
       toast({

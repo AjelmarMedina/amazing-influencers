@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
-import { ProductSchema } from "@/app/dashboard/(configuration)/products/page"
+import { SurveySchema } from "@/app/api/surveys/get/route"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -17,10 +17,9 @@ import {
 import { Input } from "@/components/ui/input"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Textarea } from "@/components/ui/textarea"
-import { useToast } from "@/components/ui/use-toast"
 import Image from "next/image"
 import { usePathname, useRouter } from "next/navigation"
-import { Suspense, useEffect, useState } from "react"
+import { Suspense, useState } from "react"
 
 export type ReviewForm = z.infer<typeof formSchema>;
 
@@ -43,44 +42,8 @@ export default function Page({ survey }: { survey: string }) {
 function Rate({ survey: encodedSurvey }: { survey: string }) {
   const router = useRouter();
   const pathname = usePathname();
-  const survey = JSON.parse(Buffer.from(encodedSurvey, "base64url").toString());
-  const { toast } = useToast();
-  const [productName, setProductName] = useState('');
-
-  useEffect(() => {
-    fetchProduct(survey.productId);
-    async function fetchProduct(productId: string) {
-      // prepare request
-      const apiUrl = "/api/products/get";
-      const requestData = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          productId
-        }),
-      };
-  
-      try {
-        // Get order from database
-        const response = await fetch(apiUrl, requestData);
-        const product: ProductSchema = await response.json();
-  
-        // Error on POST
-        if (!response.ok) throw new Error(`Error [${response.status}]: ${response.statusText}`);
-        
-        setProductName(product.name);
-      } catch (err) {
-        console.log(err);
-        toast({
-          title: "Something went wrong...",
-          description: "Please reload the page.",
-          variant: "destructive",
-        });
-      }
-    }
-  }, [survey.productId, toast])
+  const survey: SurveySchema = JSON.parse(Buffer.from(encodedSurvey, "base64url").toString());
+  const productName = survey.product?.name;
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

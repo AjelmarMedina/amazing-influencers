@@ -60,7 +60,8 @@ function Shipping() {
         ),
       });
     else {
-      setReview(JSON.parse(Buffer.from(encodedReview, "base64url").toString()))
+      const parsedReview: ReviewForm = JSON.parse(Buffer.from(encodedReview, "base64url").toString());
+      setReview(parsedReview)
     }
   }, [encodedReview, toast])
 

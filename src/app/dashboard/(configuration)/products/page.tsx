@@ -15,15 +15,6 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 
-export type ProductSchema = {
-  id: string
-  productId: string
-  name: string
-  type: string
-  userId: string
-}
-
-
 export default function Page() {
   const data: Array<ProductSchema> = []
 
