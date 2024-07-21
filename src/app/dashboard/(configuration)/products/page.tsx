@@ -1,5 +1,6 @@
 "use client"
 
+import { ProductSchema } from "@/app/api/products/get/route";
 import { Button } from "@/components/ui/button";
 import {
   Table,

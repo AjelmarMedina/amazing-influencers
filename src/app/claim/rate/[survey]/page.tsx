@@ -31,10 +31,10 @@ const formSchema = z.object({
   review: z.string().min(8, "Leave a longer review").max(512, "Review is too long")
 })
 
-export default function Page({ survey }: { survey: string }) {
+export default function Page({ params }: { params: { survey: string | any } }) {
   return (
     <Suspense>
-      <Rate survey={survey} />
+      <Rate survey={params.survey} />
     </Suspense>
   )
 }

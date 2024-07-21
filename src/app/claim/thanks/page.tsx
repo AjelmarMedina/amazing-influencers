@@ -11,10 +11,18 @@ import { OrderSchema } from "@/app/api/orders/get/route";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { ReviewForm } from '../rate/[survey]/page';
 
-export default function Rate() {
+export default function Page() {
+  return (
+    <Suspense>
+      <Thanks />
+    </Suspense>
+  )
+}
+
+function Thanks() {
   const searchParams = useSearchParams();
   const { toast } = useToast();
   const [encodedOrder, encodedReview, encodedSurvey, encodedGift, encodedShippingInfo] = [

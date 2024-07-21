@@ -149,7 +149,7 @@ function Claim({ surveyCode }: { surveyCode: string }) {
       // Forward survey to next step
       const encodedSurvey = Buffer.from(JSON.stringify(survey)).toString("base64url")
       params.append("survey", encodedSurvey);
-      router.push(`${pathname}/rate?${params.toString()}`)
+      router.push(`${pathname}/rate/${survey.surveyCode}?${params.toString()}`)
     } catch (err) {
       console.log(err);
       toast({
