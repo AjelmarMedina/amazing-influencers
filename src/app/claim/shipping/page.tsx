@@ -14,8 +14,11 @@ import {
   FormMessage
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { ToastAction } from "@/components/ui/toast"
+import { useToast } from "@/components/ui/use-toast"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { Suspense } from "react"
+import { Suspense, useCallback as useEffect, useState } from "react"
+import { ReviewForm } from "../rate/[survey]/page"
 
 const formSchema = z.object({
   fullName: z.string().min(2, "Name is too short").max(256, "Name is too long"),
@@ -40,7 +43,26 @@ function Shipping() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const review = JSON.parse(Buffer.from(searchParams.get("review") ?? "", "base64url").toString());
+  const encodedReview = searchParams.get("review");
+  const [review, setReview] = useState<ReviewForm>();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (!encodedReview)
+      toast({
+        title: "Something went wrong...",
+        description: "Please reload the page.",
+        variant: "destructive",
+        action: (
+          <ToastAction altText="Reload" onClick={location.reload}>
+            Reload
+          </ToastAction>
+        ),
+      });
+    else {
+      setReview(JSON.parse(Buffer.from(encodedReview, "base64url").toString()))
+    }
+  }, [encodedReview, toast])
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -54,8 +76,8 @@ function Shipping() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     // ✅ This will be type-safe and validated.
     const params = new URLSearchParams(searchParams);
-    const base64 =  Buffer.from(JSON.stringify(values)).toString("base64url");
-    params.append("shipping", base64);
+    const encodedValues =  Buffer.from(JSON.stringify(values)).toString("base64url");
+    params.append("shipping", encodedValues);
     router.push(`${pathname.replace("shipping", "thanks")}?${params.toString()}`)
   }
 

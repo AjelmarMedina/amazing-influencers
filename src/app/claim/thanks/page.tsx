@@ -1,15 +1,44 @@
 "use client"
 
-import { z } from "zod"
+import { GiveawaySchema } from "@/app/dashboard/(configuration)/giveaways/page";
+import { SurveySchema } from "@/app/dashboard/(configuration)/surveys/page";
+import { Button } from "@/components/ui/button";
+import { ToastAction } from "@/components/ui/toast";
+import { useToast } from "@/components/ui/use-toast";
 
-import { Button } from "@/components/ui/button"
+import Image from "next/image";
 import Link from "next/link";
-import Image from "next/image"
-
-const formSchema = z.object({
-})
+import { useSearchParams } from "next/navigation";
+import { useEffect } from "react";
+import { ReviewForm } from '../rate/[survey]/page';
 
 export default function Rate() {
+  const searchParams = useSearchParams();
+  const { toast } = useToast();
+  const [encodedReview, encodedSurvey, encodedGift] = [
+    searchParams.get("review"), searchParams.get("survey"), searchParams.get("gift")
+  ];
+
+  useEffect(() => {
+    if (!encodedReview || !encodedSurvey || !encodedGift)
+      toast({
+        title: "Something went wrong...",
+        description: "Please reload the page.",
+        variant: "destructive",
+        action: (
+          <ToastAction altText="Reload" onClick={location.reload}>
+            Reload
+          </ToastAction>
+        ),
+      });
+    else {
+      const review: ReviewForm = JSON.parse(Buffer.from(encodedReview, "base64url").toString());
+      const survey: SurveySchema = JSON.parse(Buffer.from(encodedSurvey, "base64url").toString());
+      const gift: GiveawaySchema = JSON.parse(Buffer.from(encodedGift, "base64url").toString());
+      submitReview(review, survey, gift)
+    }
+  })
+
   return(
     <div className="space-y-8 flex flex-col items-stretch bg-white p-5 rounded-xl w-full text-center">
       <Image 
@@ -29,6 +58,37 @@ export default function Rate() {
     </div>
   )
 
+  async function submitReview(submittedReview: ReviewForm, survey: SurveySchema, gift: GiveawaySchema) {
+    // prepare request
+    const apiUrl = "/api/reviews/create";
+    const requestData = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        submitReview,
+        survey,
+        gift,
+      }),
+    };
+
+    try {
+      // Get order from database
+      const response = await fetch(apiUrl, requestData);
+
+      // Error on POST
+      if (!response.ok) throw new Error(`Error [${response.status}]: ${response.statusText}`);
+      
+    } catch (err) {
+      console.log(err);
+      toast({
+        title: "Something went wrong...",
+        description: "Please reload the page.",
+        variant: "destructive",
+      });
+    }
+  }
 
 }
 

@@ -4,6 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
+import { GiveawaySchema } from "@/app/dashboard/(configuration)/giveaways/page"
+import { SurveySchema } from "@/app/dashboard/(configuration)/surveys/page"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -14,15 +16,10 @@ import {
   FormMessage
 } from "@/components/ui/form"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { toast } from "@/components/ui/use-toast"
+import { ToastAction } from "@radix-ui/react-toast"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { Suspense } from "react"
-
-const giveaways = [
-  "$1 Amazon gift card",
-  "$2 Amazon gift card",
-  "$3 Amazon gift card",
-  "$4 Amazon gift card",
-]
+import { Suspense, useEffect, useState } from "react"
 
 const formSchema = z.object({
   gift: z.string({ required_error: "Choose your gift" })
@@ -40,19 +37,70 @@ function Gift() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const encodedSurvey = searchParams.get("survey");
+  const [giveaways, setGiveaways] = useState<Array<GiveawaySchema>>();
+
+  useEffect(() => {
+    if (!encodedSurvey) 
+      toast({
+        title: "Something went wrong...",
+        description: "Please reload the page.",
+        variant: "destructive",
+        action: (
+          <ToastAction altText="Reload" onClick={location.reload}>
+            Reload
+          </ToastAction>
+        ),
+      });
+    else {
+      const survey: SurveySchema = JSON.parse(Buffer.from(encodedSurvey, "base64url").toString())
+      fetchGiveaways(survey.giveaways)
+    }
+
+    async function fetchGiveaways(giveaways: string[]) {
+      // prepare request
+      const apiUrl = "/api/products/get";
+      const requestData = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          giveaways
+        }),
+      };
+  
+      try {
+        // Get order from database
+        const response = await fetch(apiUrl, requestData);
+        const giveaways: Array<GiveawaySchema> = await response.json();
+  
+        // Error on POST
+        if (!response.ok) throw new Error(`Error [${response.status}]: ${response.statusText}`);
+        
+        setGiveaways(giveaways);
+      } catch (err) {
+        console.log(err);
+        toast({
+          title: "Something went wrong...",
+          description: "Please reload the page.",
+          variant: "destructive",
+        });
+      }
+    } 
+  })
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      gift: giveaways[0],
     },
   })
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     // ✅ This will be type-safe and validated.
     const params = new URLSearchParams(searchParams);
-    const base64 = Buffer.from(JSON.stringify(values)).toString("base64url");
-    params.append("gift", base64);
+    const encodedValues = Buffer.from(JSON.stringify(values)).toString("base64url");
+    params.append("gift", encodedValues);
     router.push(`${pathname.replace("gift", "shipping")}?${params.toString()}`)
   }
 
@@ -73,13 +121,13 @@ function Gift() {
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder={giveaways[0]} />
+                    <SelectValue placeholder={"Select a gift"} />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {giveaways.map((gift, index) => (
-                    <SelectItem key={index} value={gift}>
-                      {gift}
+                  {giveaways?.map((gift: GiveawaySchema, index: number) => (
+                    <SelectItem key={index} value={gift.id}>
+                      {gift.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -92,7 +140,5 @@ function Gift() {
       </form>
     </Form>
   )
-
-
 }
 

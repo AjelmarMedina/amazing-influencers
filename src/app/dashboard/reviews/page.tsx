@@ -1,6 +1,30 @@
 import { StarIcon } from "lucide-react";
 import Link from "next/link";
 
+export type ReviewsSchema = {
+  id?: string
+  rating: string
+  reviewerInfo: {
+    name: string
+    phone: string
+    email: string
+  }
+  review: string
+  shippingInfo: {
+    fullname: string
+    contactName: string
+    email: string
+    address: string
+    city: string
+    state_province: string
+    zipCode: string
+  }
+  date: Date
+  orderNum: string
+  giveawayId: string
+  surveyId: string
+}
+
 export default function Reviews() {
   return (
     <div className="w-full flex flex-col justify-center items-center">

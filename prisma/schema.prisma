@@ -28,9 +28,9 @@ model reviews {
 }
 
 type Reviewer {
-  reviewerName  String
-  reviewerPhone String
-  reviewerEmail String
+  name  String
+  phone String
+  email String
 }
 
 type Shipping {
@@ -50,14 +50,14 @@ model surveys {
   started    Int
   completed  Int
   ratio      Float
-  productId  String   @unique // `products` - one survey for each product
+  productId  String   // `products` - one survey for each product
   giveaways  String[]
 }
 
 model products {
   id        String @id @default(auto()) @map("_id") @db.ObjectId
   productId String
-  Name      String
+  name      String
   type      String
   userId    String // `users` - product seller
 }
@@ -78,7 +78,6 @@ model orders {
   fullName    String
   phone       String
   marketplace String
-  surveyUrl   String   @unique
   campaign    String
   created     DateTime
   productId   String // `products` - product purcheased for the order

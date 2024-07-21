@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
+import { ProductSchema } from "@/app/dashboard/(configuration)/products/page"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -16,16 +17,12 @@ import {
 import { Input } from "@/components/ui/input"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Textarea } from "@/components/ui/textarea"
+import { useToast } from "@/components/ui/use-toast"
 import Image from "next/image"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { Suspense, useState } from "react"
+import { usePathname, useRouter } from "next/navigation"
+import { Suspense, useEffect, useState } from "react"
 
-const orders = [
-  {
-    orderId: "888-5049177-9546820",
-    name: "Hydrating Serum",
-  },
-]
+export type ReviewForm = z.infer<typeof formSchema>;
 
 const formSchema = z.object({
   rating: z.preprocess((val) => Number(val), z.number()),
@@ -35,19 +32,55 @@ const formSchema = z.object({
   review: z.string().min(8, "Leave a longer review").max(512, "Review is too long")
 })
 
-export default function Page() {
+export default function Page({ survey }: { survey: string }) {
   return (
     <Suspense>
-      <Rate />
+      <Rate survey={survey} />
     </Suspense>
   )
 }
 
-function Rate() {
+function Rate({ survey: encodedSurvey }: { survey: string }) {
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams()
-  const order = orders.find((row) => row.orderId === searchParams.get("code"));
+  const survey = JSON.parse(Buffer.from(encodedSurvey, "base64url").toString());
+  const { toast } = useToast();
+  const [productName, setProductName] = useState('');
+
+  useEffect(() => {
+    fetchProduct(survey.productId);
+    async function fetchProduct(productId: string) {
+      // prepare request
+      const apiUrl = "/api/products/get";
+      const requestData = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          productId
+        }),
+      };
+  
+      try {
+        // Get order from database
+        const response = await fetch(apiUrl, requestData);
+        const product: ProductSchema = await response.json();
+  
+        // Error on POST
+        if (!response.ok) throw new Error(`Error [${response.status}]: ${response.statusText}`);
+        
+        setProductName(product.name);
+      } catch (err) {
+        console.log(err);
+        toast({
+          title: "Something went wrong...",
+          description: "Please reload the page.",
+          variant: "destructive",
+        });
+      }
+    }
+  }, [survey.productId, toast])
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -59,8 +92,9 @@ function Rate() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     // ✅ This will be type-safe and validated.
     const params = new URLSearchParams();
-    const base64 = Buffer.from(JSON.stringify(values)).toString("base64url");
-    params.set("review", base64);
+    const encodedvalues = Buffer.from(JSON.stringify(values)).toString("base64url");
+    params.append("survey", encodedSurvey)
+    params.append("review", encodedvalues);
     router.push(`${pathname.replace("rate", "paste")}?${params.toString()}`)
   }
 
@@ -80,7 +114,7 @@ function Rate() {
             height={100}
             className="self-center"
           />
-          <h2>{order?.name}</h2>
+          <h2>{productName}</h2>
         </article>
         <Ratings />
         <div className="grid grid-cols-2 gap-4">
@@ -141,6 +175,7 @@ function Rate() {
       </form>
     </Form>
   )
+
 
   function Ratings() {
     const [rating, setRating] = useState<number>(0);

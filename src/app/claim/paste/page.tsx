@@ -14,8 +14,11 @@ import {
   FormMessage
 } from "@/components/ui/form"
 import { Textarea } from "@/components/ui/textarea"
+import { ToastAction } from "@/components/ui/toast"
+import { useToast } from "@/components/ui/use-toast"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { Suspense } from "react"
+import { Suspense, useEffect, useState } from "react"
+import { ReviewForm } from "../rate/[survey]/page"
 
 const formSchema = z.object({
   review: z.string()
@@ -33,7 +36,25 @@ function Paste() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const review = JSON.parse(Buffer.from(searchParams.get("review") ?? "", "base64url").toString());
+  const encodedReview = searchParams.get("review");
+  const { toast } = useToast();
+  const [review, setReview] = useState<ReviewForm>();
+
+  useEffect(() => {
+    if (!encodedReview) 
+      toast({
+        title: "Something went wrong...",
+        description: "Please reload the page.",
+        variant: "destructive",
+        action: (
+          <ToastAction altText="Reload" onClick={location.reload}>
+            Reload
+          </ToastAction>
+        ),
+      });
+    else setReview(JSON.parse(Buffer.from(encodedReview, "base64url").toString()))
+
+  }, [encodedReview, searchParams, toast])
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

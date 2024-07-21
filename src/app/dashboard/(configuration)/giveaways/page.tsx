@@ -15,24 +15,16 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 
-type giveawayData = [
-  {
-    image: string;
-    name: string;
-    type: string;
-    status: string;
-  }
-]
+export type GiveawaySchema = {
+  id: string
+  name: string
+  type: string
+  status: string
+  userId: string
+}
 
 export default function Page() {
-  const data: giveawayData = [
-    {
-      image: "/dashboard/product-placeholder.png",
-      name: "Hair Oil",
-      type: "Product",
-      status: "Enabled",
-    }
-  ]
+  const data: Array<GiveawaySchema> = [];
 
   return (
     <div className="max-w-full flex flex-col w-full space-y-4">
@@ -70,7 +62,7 @@ export default function Page() {
                 <TableCell className="flex flex-row min-w-12">
                   <Image
                     alt="Product Image"
-                    src={row.image}
+                    src={"/dashboard/product-placeholder.png"}
                     width={48}
                     height={48}
                     className="mr-4 min-w-12 aspect-square"

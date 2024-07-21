@@ -1,5 +1,6 @@
 "use server";
 
+import { OrderSchema } from "@/app/dashboard/(administration)/orders/page";
 import db from "@/lib/prisma";
 
 import { NextResponse } from "next/server";
@@ -40,11 +41,11 @@ export async function POST(req: Request) {
         productId: sample,
         surveyCode: sample,
         userId: sample,
-      }, { status: 200 })
+      } satisfies OrderSchema, { status: 200 })
     }
 
     // find order on the database
-    const order = await db.orders.findUnique({
+    const order: OrderSchema | null = await db.orders.findUnique({
       where: {
         orderNum: orderNum,
       }

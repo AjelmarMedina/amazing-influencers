@@ -1,5 +1,6 @@
 "use server";
 
+import { SurveySchema } from "@/app/dashboard/(configuration)/surveys/page";
 import db from "@/lib/prisma";
 
 import { NextResponse } from "next/server";
@@ -11,29 +12,9 @@ export async function POST(req: Request) {
     
     console.log(surveyCode);
     
-    /*
-    {
-      id         String @id @default(auto()) @map("_id") @db.ObjectId
-      surveyCode String @unique
-      name       String
-      started    Int
-      completed  Int
-      ratio      Float
-      productId  Int    @unique // `products` - one survey for each product
-    }
-    */
-    if (Buffer.from(surveyCode, "base64url").toString() === "888-5049177-9546820") return NextResponse.json({
-      id: "0",
-      surveyCode: surveyCode,
-      name: "Test Survey",
-      started: 1,
-      completed: 0,
-      ratio: 0.0,
-      productId: surveyCode,
-    }, { status: 200 })
 
     // find order on the database
-    const survey = await db.surveys.findUnique({
+    const survey: SurveySchema | null = await db.surveys.findUnique({
       where: {
         surveyCode: surveyCode,
       }

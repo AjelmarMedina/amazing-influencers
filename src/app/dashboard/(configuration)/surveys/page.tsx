@@ -19,26 +19,20 @@ import {
   TrashIcon
 } from "lucide-react";
 
-type surveysData = [
-  {
-    name: string;
-    started: number;
-    completed: number;
-    ratio: number;
-    code: string;
-  }
-]
+export type SurveySchema = {
+  id?: string
+  surveyCode: string
+  name: string
+  started: number
+  completed: number
+  ratio: number
+  productId: string
+  giveaways: string[]
+}
+
 
 export default function Page() {
-  const data: surveysData = [
-    {
-      name: "my survey",
-      started: 1,
-      completed: 0,
-      ratio: 0.0,
-      code: "3f5ed2",
-    }
-  ]
+  const data: Array<SurveySchema> = []
 
   return (
     <div className="max-w-full flex flex-col w-full space-y-4">
@@ -77,7 +71,7 @@ export default function Page() {
                     <AreaChartIcon />
                   </Button>
                 </TableCell>
-                <TableCell className="text-red-500">{row.code}</TableCell>
+                <TableCell className="text-red-500">{row.surveyCode}</TableCell>
                 <TableCell>
                   <Button variant={"ghost"} className="px-2">
                     <SquarePenIcon />

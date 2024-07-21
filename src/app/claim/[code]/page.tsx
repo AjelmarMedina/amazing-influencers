@@ -1,10 +1,12 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
+import { OrderSchema } from "@/app/dashboard/(administration)/orders/page"
+import { SurveySchema } from "@/app/dashboard/(configuration)/surveys/page"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -15,13 +17,15 @@ import {
   FormMessage
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { useToast } from "@/components/ui/use-toast"
+import { ToastAction } from "@radix-ui/react-toast"
 import Image from "next/image"
 import { Suspense, useState } from "react"
 
-export default function Page() {
+export default function Page({ params }: { params: { code: string } }) {
   return (
     <Suspense>
-      <Claim />
+      <Claim surveyCode={params.code} />
     </Suspense>
   )
 }
@@ -30,24 +34,23 @@ const formSchema = z.object({
   orderNum: z.string({ required_error: "Enter your Order Number" }).trim(),
 })
 
-function Claim() {
+function Claim({ surveyCode }: { surveyCode: string }) {
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams()
-  const orderNum = searchParams.get('code');
+  const { toast } = useToast();
   const [submitDisabled, setSubmitDisabled] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      orderNum: orderNum ?? "",
+      orderNum: "",
     },
   })
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     // ✅ This will be type-safe and validated.
     setSubmitDisabled(true);
-    handleOrderFetch(values.orderNum.trim());
+    verifyOrder(values.orderNum.trim());
   }
 
   return(
@@ -88,7 +91,7 @@ function Claim() {
     </Form>
   )
 
-  async function handleOrderFetch(orderNum: string) {
+  async function verifyOrder(orderNum: string) {
     // prepare request
     const apiUrl = "/api/orders/get";
     const requestData = {
@@ -104,20 +107,20 @@ function Claim() {
     try {
       // Get order from database
       const response = await fetch(apiUrl, requestData);
-      const order = await response.json();
+      const order: OrderSchema | null | undefined = await response.json();
 
       // Order not found
       if (!order) throw form.setError("orderNum", {message: "Order not found..."});
       // Error on POST
       if (!response.ok) throw form.setError("orderNum", {message: "Something went wrong..."});
   
-      handleSurveyFetch(order.surveyCode, orderNum)
+      handleSurveyFetch()
     } catch (err) {
       setSubmitDisabled(false);
     }
   }
 
-  async function handleSurveyFetch(surveyCode: string, orderNum: string) {
+  async function handleSurveyFetch() {
     // prepare request
     const apiUrl = "/api/surveys/get";
     const requestData = {
@@ -133,19 +136,31 @@ function Claim() {
     try {
       // Get order from database
       const response = await fetch(apiUrl, requestData);
-      const survey = await response.json();
+      const survey: SurveySchema | null | undefined = await response.json();
 
-      // Order not found
-      if (!survey) throw form.setError("orderNum", {message: "Surveys for your product order are not active..."});
+      // Survey not found
+      if (!survey) throw new Error();
       // Error on POST
-      if (!response.ok) throw form.setError("orderNum", {message: "Something went wrong..."});
+      if (!response.ok) throw new Error();
   
-      // Pass orderNum as param to next step
+      // Forward survey to next step
       const params = new URLSearchParams();
-      params.set("order", orderNum ?? "");
+      const encodedSurvey = Buffer.from(JSON.stringify(survey)).toString("base64url")
+      params.set("survey", encodedSurvey);
       router.push(`${pathname}/rate?${params.toString()}`)
+
     } catch (err) {
-      setSubmitDisabled(false);
+      console.log(err);
+      toast({
+        title: "Something went wrong...",
+        description: "Please reload the page.",
+        variant: "destructive",
+        action: (
+          <ToastAction altText="Reload" onClick={location.reload}>
+            Reload
+          </ToastAction>
+        ),
+      })
     }
   }
   

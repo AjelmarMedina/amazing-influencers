@@ -9,21 +9,22 @@ import {
   TableRow
 } from "@/components/ui/table";
 
+export type OrderSchema = {
+  id?: String
+  orderNum: String
+  date: Date
+  email: String
+  fullName: String
+  phone: String
+  marketplace: String
+  campaign: String
+  created: Date
+  productId: String
+  surveyCode: String
+  userId: String
+}
+
 export default function Page() {
-  interface OrderSchema {
-    id: string;
-    date: string;
-    email: string;
-    name: string;
-    phone: string;
-    surveyCode: string;
-    marketplace: string;
-    product: string;
-    surveyUrl: string;
-    campaign: string;
-    createdAt: string;
-  }
-  
   const data: Array<OrderSchema> = [];
 
   return (
