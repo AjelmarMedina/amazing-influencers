@@ -2,6 +2,7 @@
 
 import db from "@/lib/prisma";
 
+import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
 import { ProductSchema } from "../../products/get/route";
 import { SurveySchema } from "../../surveys/get/route";
@@ -30,7 +31,7 @@ export async function POST(req: Request) {
     // detsrtucture data from the incoming request
     const { orderNum } = await req.json();
     
-    if (orderNum === "888-5049177-9546820") return NextResponse.json(orderNum, { status: 200 });
+    if (orderNum === "888-5049177-9546820") return NextResponse.json({orderNum: orderNum, id: new ObjectId()}, { status: 200 });
 
     // find order on the database
     const order: OrderSchema | null = await db.order.findUnique({

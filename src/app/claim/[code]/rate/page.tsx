@@ -17,33 +17,56 @@ import {
 import { Input } from "@/components/ui/input"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Textarea } from "@/components/ui/textarea"
+import { ToastAction } from "@/components/ui/toast"
+import { toast } from "@/components/ui/use-toast"
 import Image from "next/image"
-import { usePathname, useRouter } from "next/navigation"
-import { Suspense, useState } from "react"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { Suspense, useEffect, useState } from "react"
 
 export type ReviewForm = z.infer<typeof formSchema>;
 
 const formSchema = z.object({
-  rating: z.preprocess((val) => Number(val), z.number()),
+  rating: z.coerce
+    .number()
+    .refine((val) => Number(val) > 0, "Leave a rating..."),
   name: z.string().min(2, "Name too short").max(256, "Name too long"),
   phoneNum: z.string().regex(/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/, "Invalid Phone number"),
   email: z.string().email(),
   review: z.string().min(8, "Leave a longer review").max(512, "Review is too long")
 })
 
-export default function Page({ params }: { params: { survey: string | any } }) {
+export default function Page() {
   return (
     <Suspense>
-      <Rate survey={params.survey} />
+      <Rate />
     </Suspense>
   )
 }
 
-function Rate({ survey: encodedSurvey }: { survey: string }) {
+function Rate() {
   const router = useRouter();
   const pathname = usePathname();
-  const survey: SurveySchema = JSON.parse(Buffer.from(encodedSurvey, "base64url").toString());
-  const productName = survey.product?.name;
+  const searchParams = useSearchParams()
+  const encodedSurvey = searchParams.get("survey");
+  const [productName, setProductName] = useState<string>();
+
+  useEffect(() => {
+    if (!encodedSurvey)
+      toast({
+        title: "Something went wrong...",
+        description: "Please reload the page.",
+        variant: "destructive",
+        action: (
+          <ToastAction altText="Reload" onClick={location.reload}>
+            Reload
+          </ToastAction>
+        ),
+      });
+    else {
+      const parsedSurvey: SurveySchema = JSON.parse(Buffer.from(encodedSurvey, "base64").toString());
+      setProductName(parsedSurvey.product?.name ?? "")
+    }
+  }, [encodedSurvey])
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -54,10 +77,9 @@ function Rate({ survey: encodedSurvey }: { survey: string }) {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     // ✅ This will be type-safe and validated.
-    const params = new URLSearchParams();
-    const encodedvalues = Buffer.from(JSON.stringify(values)).toString("base64url");
-    params.append("survey", encodedSurvey)
-    params.append("review", encodedvalues);
+    const params = new URLSearchParams(searchParams);
+    const encodedvalues = Buffer.from(JSON.stringify(values)).toString("base64");
+    params.set("review", encodedvalues);
     router.push(`${pathname.replace("rate", "paste")}?${params.toString()}`)
   }
 
@@ -115,7 +137,7 @@ function Rate({ survey: encodedSurvey }: { survey: string }) {
             <FormItem className="flex flex-col space-y-4">
               <FormLabel className="">Email</FormLabel>
               <FormControl>
-                <Input placeholder="you@example.com" {...field} />
+                <Input placeholder="you@example.com" type="email" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -175,7 +197,7 @@ function Rate({ survey: encodedSurvey }: { survey: string }) {
                         className="text-4xl hover:cursor-pointer"
                         style={{
                           color: 
-                            currentRating <= (hover || field.value)
+                            currentRating <= (hover || Number(field.value))
                               ? "#ffc107"
                               : "#e4e5e9"
                         }}

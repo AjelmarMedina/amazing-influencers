@@ -31,7 +31,7 @@ export default function Page({ params }: { params: { code: string } }) {
 }
 
 const formSchema = z.object({
-  orderNum: z.string({ required_error: "Enter your Order Number" }).trim(),
+  orderNum: z.string({ required_error: "Enter your Order Number" }).min(16, "Enter an Order Number").trim(),
 })
 
 function Claim({ surveyCode }: { surveyCode: string }) {
@@ -111,15 +111,17 @@ function Claim({ surveyCode }: { surveyCode: string }) {
       const order: OrderSchema | null | undefined = await response.json();
 
       // Order not found
-      if (!order) throw form.setError("orderNum", {message: "Order not found..."});
+      if (!order) throw new Error("Order not found...");
       // Error on POST
-      if (!response.ok) throw form.setError("orderNum", {message: "Something went wrong..."});
+      if (!response.ok) throw new Error("Something went wrong...");
   
-      const encodedOrder = Buffer.from(JSON.stringify(order)).toString("base64url")
-      params.append("order", encodedOrder);
+      const encodedOrder = Buffer.from(JSON.stringify(order)).toString("base64");
+      params.set("order", encodedOrder);
       handleSurveyFetch()
     } catch (err) {
       setSubmitDisabled(false);
+      form.setError("orderNum", {message: `${err}`});
+      console.log(err);
     }
   }
 
@@ -139,7 +141,7 @@ function Claim({ surveyCode }: { surveyCode: string }) {
     try {
       // Get order from database
       const response = await fetch(apiUrl, requestData);
-      const survey: SurveySchema | null | undefined = await response.json();
+      const survey: SurveySchema | null = await response.json();
 
       // Survey not found
       if (!survey) throw new Error();
@@ -147,11 +149,12 @@ function Claim({ surveyCode }: { surveyCode: string }) {
       if (!response.ok) throw new Error();
   
       // Forward survey to next step
-      const encodedSurvey = Buffer.from(JSON.stringify(survey)).toString("base64url")
-      params.append("survey", encodedSurvey);
-      router.push(`${pathname}/rate/${survey.surveyCode}?${params.toString()}`)
+      const encodedSurvey = Buffer.from(JSON.stringify(survey)).toString("base64");
+      params.set("survey", encodedSurvey);
+      router.push(`${pathname}/rate?${params.toString()}`)
     } catch (err) {
       console.log(err);
+      setSubmitDisabled(false);
       toast({
         title: "Something went wrong...",
         description: "Please reload the page.",

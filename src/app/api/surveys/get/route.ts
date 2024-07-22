@@ -5,6 +5,7 @@ import db from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { GiveawaySchema } from "../../giveaways/get/route";
 import { ProductSchema } from "../../products/get/route";
+import { UserSchema } from "../../users/create/route";
 
 export type SurveySchema = {
   id: string
@@ -13,10 +14,12 @@ export type SurveySchema = {
   started: number
   completed: number
   ratio: number
-  giveawayIds: Array<string>
-  giveaways?: Array<GiveawaySchema>
+  userId: string
+  user?: UserSchema
   productId: string
   product?: ProductSchema
+  giveawayIds: Array<string>
+  giveaways?: Array<GiveawaySchema>
 }
 
 export async function POST(req: Request) {

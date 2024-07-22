@@ -47,18 +47,6 @@ model Survey {
   reviews     Review[]
 }
 
-model Giveaway {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  name      String
-  type      String
-  status    String
-  userId    String   @db.ObjectId // `users`
-  user      User     @relation(fields: [userId], references: [id])
-  surveyIds String[] @db.ObjectId
-  surveys   Survey[] @relation(fields: [surveyIds], references: [id])
-  reviews   Review[]
-}
-
 model Order {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
   orderNum    String   @unique @db.ObjectId
@@ -76,6 +64,18 @@ model Order {
   userId      String   @db.ObjectId // `users` - products ordered from
   user        User     @relation(fields: [userId], references: [id])
   review      Review?
+}
+
+model Giveaway {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  type      String
+  status    String
+  userId    String   @db.ObjectId // `users`
+  user      User     @relation(fields: [userId], references: [id])
+  surveyIds String[] @db.ObjectId
+  surveys   Survey[] @relation(fields: [surveyIds], references: [id])
+  reviews   Review[]
 }
 
 model Review {
@@ -101,8 +101,8 @@ type Reviewer {
 }
 
 type Shipping {
-  fullname      String
-  contactName   String
+  fullName      String
+  contactNum   String
   email         String
   address1      String
   address2      String?

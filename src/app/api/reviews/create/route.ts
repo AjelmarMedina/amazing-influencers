@@ -3,7 +3,7 @@
 import db from "@/lib/prisma";
 
 import { NextResponse } from "next/server";
-import { ReviewForm } from '../../../claim/rate/[survey]/page';
+import { ReviewForm } from '../../../claim/[code]/rate/page';
 import { GiveawaySchema } from '../../giveaways/get/route';
 import { OrderSchema } from '../../orders/get/route';
 import { SurveySchema } from "../../surveys/get/route";
@@ -29,8 +29,8 @@ export type ReviewsSchema = {
 }
 
 export type ShippingInfoSchema = {
-  fullname: string
-  contactName: string
+  fullName: string
+  contactNum: string
   email: string
   address1: string
   address2?: string | null
