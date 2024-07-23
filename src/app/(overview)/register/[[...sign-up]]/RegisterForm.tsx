@@ -166,10 +166,10 @@ function Register() {
     if (!isLoaded) return;
     if (!userInfo) return;
 
-    const emailAddress = userInfo.email;
-    const password = userInfo.password;
-    const firstName = userInfo.firstName;
-    const lastName = userInfo.lastName;
+    const emailAddress = userInfo.email.trimEnd();
+    const password = userInfo.password.trimEnd();
+    const firstName = userInfo.firstName.trimEnd();
+    const lastName = userInfo.lastName.trimEnd();
   
     try {
       await signUp.create({

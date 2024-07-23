@@ -1,36 +1,25 @@
-"use client"
-
-import { ProductSchema } from "@/app/api/products/get/route";
-import { Button } from "@/components/ui/button";
 import {
   Table,
-  TableBody,
   TableCell,
   TableHeader,
   TableRow
 } from "@/components/ui/table";
-import {
-  PenBox,
-  PlusIcon,
-  TrashIcon
-} from "lucide-react";
-import Image from "next/image";
+import { Suspense } from "react";
+import NewProductForm from "./NewProductForm";
+import ProductsTable from "./ProductsTable";
 
 export default function Page() {
-  const data: Array<ProductSchema> = []
-
   return (
     <div className="max-w-full flex flex-col w-full space-y-4">
       <header className="flex flex-row justify-between">
         <h1 className="font-bold text-2xl">Products</h1>
-        <Button className="space-x-2">
-          <PlusIcon />
-          Create Product
-        </Button>
+        <Suspense>
+          <NewProductForm />
+        </Suspense>
       </header>
-      <div className="shadow-md rounded-xl overflow-hidden">
+      <div className="shadow-md rounded-xl overflow-auto grid">
         <Table className="">
-          <TableHeader className="bg-[#F3F4F6]">
+          <TableHeader className="bg-[#F3F4F6] *:min-w-max *:text-nowrap">
             <TableRow className="text-[#343A40] font-bold">
               <TableCell>
                 Name
@@ -43,36 +32,7 @@ export default function Page() {
               </TableCell>
             </TableRow>
           </TableHeader>
-          <TableBody className="bg-white">
-            {data.map((row, index) => (
-              <TableRow key={index} className="font-medium">
-                <TableCell className="flex flex-row items-center">
-                  <Image
-                    alt="Product Image"
-                    src={"/dashboard/product-placeholder.png"}
-                    width={48}
-                    height={48}
-                    className="mr-4 min-w-12 max-h-12 aspect-square"
-                  />
-                  <div className="flex flex-col justify-start">
-                    <p className="text-base">{row.name}</p>
-                    <p className="text-sm">ID: <span className="bg-F0F0F0 text-red-500">{row.id}</span></p>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  {row.type}
-                </TableCell>
-                <TableCell>
-                  <Button variant={"ghost"} className="">
-                    <PenBox/>
-                  </Button>
-                  <Button variant={"ghost"} className="text-red-500 hover:text-red-500/90">
-                    <TrashIcon/>
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
+          <ProductsTable />
         </Table>
       </div>
     </div>

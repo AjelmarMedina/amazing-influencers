@@ -1,20 +1,14 @@
 "use client"
 
 import { GiveawaySchema } from "@/app/api/giveaways/get/route";
-import { Button } from "@/components/ui/button";
 import {
   Table,
-  TableBody,
   TableCell,
   TableHeader,
   TableRow
 } from "@/components/ui/table";
-import {
-  PenBox,
-  PlusIcon,
-  TrashIcon
-} from "lucide-react";
-import Image from "next/image";
+import GiveawaysTable from "./GiveawaysTable";
+import NewGiveawayForm from "./NewGiveawayForm";
 
 export default function Page() {
   const data: Array<GiveawaySchema> = [];
@@ -23,12 +17,9 @@ export default function Page() {
     <div className="max-w-full flex flex-col w-full space-y-4">
       <header className="flex flex-row justify-between">
         <h1 className="font-bold text-2xl">Giveaways</h1>
-        <Button className="space-x-2">
-          <PlusIcon />
-          Create Giveaway
-        </Button>
+        <NewGiveawayForm />
       </header>
-      <div className="shadow-md rounded-xl overflow-hidden">
+      <div className="shadow-md rounded-xl overflow-auto grid">
         <Table className="shadow-md rounded-xl">
           <TableHeader className="bg-[#F3F4F6]">
             <TableRow className="text-[#343A40] font-bold">
@@ -49,38 +40,7 @@ export default function Page() {
               </TableCell>
             </TableRow>
           </TableHeader>
-          <TableBody className="bg-white">
-            {data.map((row, index) => (
-              <TableRow key={index} className="font-medium">
-                <TableCell className="flex flex-row min-w-12">
-                  <Image
-                    alt="Product Image"
-                    src={"/dashboard/product-placeholder.png"}
-                    width={48}
-                    height={48}
-                    className="mr-4 min-w-12 aspect-square"
-                  />
-                </TableCell>
-                <TableCell>
-                  {row.name}
-                </TableCell>
-                <TableCell>
-                  {row.type}
-                </TableCell>
-                <TableCell>
-                  {row.status}
-                </TableCell>
-                <TableCell>
-                  <Button variant={"ghost"} className="">
-                    <PenBox/>
-                  </Button>
-                  <Button variant={"ghost"} className="text-red-500 hover:text-red-500/90">
-                    <TrashIcon/>
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
+          <GiveawaysTable />
         </Table>
       </div>
     </div>

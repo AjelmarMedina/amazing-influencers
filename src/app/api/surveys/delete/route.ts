@@ -3,22 +3,17 @@
 import db from "@/lib/prisma";
 
 import { NextResponse } from "next/server";
-import { UserSchema } from "../../users/create/route";
+import { SurveySchema } from "../get/route";
 
 export async function POST(req: Request) {
   try {
     // detsrtucture data from the incoming request
-    const { userEmail } = await req.json();
+    const { id }: { id: string } = await req.json();
     
-    // find order on the database
-    const survey: UserSchema | null = await db.user.findUnique({
+    // delete document from database
+    const survey: SurveySchema = await db.survey.delete({
       where: {
-        email: userEmail,
-      },
-      include: {
-        surveys: true,
-        products: true,
-        giveaways: true
+        id: id
       }
     })
 

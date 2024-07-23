@@ -4,7 +4,7 @@ import { UserSchema } from "@/app/api/users/create/route";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { getUser } from "@/lib/data";
+import { deleteSurvey, getUser } from "@/lib/data";
 import { useUser } from "@clerk/nextjs";
 import { AreaChartIcon, DownloadIcon, ExternalLinkIcon, PlayIcon, SquarePenIcon, TrashIcon } from 'lucide-react';
 import Image from "next/image";
@@ -23,13 +23,13 @@ export default function SurveyTable() {
 
 function Surveys() {
   const { user } = useUser();
-  const { data } = useSwr<UserSchema, any, any>(user?.primaryEmailAddress?.emailAddress, getUser)
+  const { data, mutate } = useSwr<UserSchema, any, any>(user?.primaryEmailAddress?.emailAddress, getUser)
 
-  return (
+  if (data) return (
     <TableBody className="bg-white">
-      {data?.surveys?.map((survey, index) => (
+      {data.surveys?.map((survey, index) => (
         <TableRow key={index} className="font-medium">
-          <TableCell>{survey.name}</TableCell>
+          <TableCell className="min-w-32">{survey.name}</TableCell>
           <TableCell>{survey.started}</TableCell>
           <TableCell>{survey.completed}</TableCell>
           <TableCell>{survey.ratio.toFixed(2)}</TableCell>
@@ -55,8 +55,8 @@ function Surveys() {
             <QrDialog title={survey.name} code={survey.surveyCode} />
           </TableCell>
           <TableCell>
-            <div className="flex flex-row flex-wrap">
-              <Button variant={"ghost"} className="text-red-500 hover:text-red-500/90 px-2">
+            <div className="flex flex-row flex-nowrap">
+              <Button variant={"ghost"} className="text-red-500 hover:text-red-500/90 px-2" onClick={() => deleteSurvey(survey.id).then(val => mutate())}>
                 <TrashIcon/>
               </Button>
               <Button variant={"ghost"} className="text-green-500 hover:text-green-500/90 px-2">

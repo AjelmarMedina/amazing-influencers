@@ -42,7 +42,7 @@ function Login() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     // ✅ This will be type-safe and validated.
     setVerifying(true);
-    handleSignIn(values.email, values.password);
+    handleSignIn(values.email.trimEnd(), values.password.trimEnd());
   }
 
   return (

@@ -3,7 +3,7 @@
 import db from "@/lib/prisma";
 
 import { NextResponse } from "next/server";
-import { UserSchema } from "../../users/create/route";
+import { ReviewsSchema } from "../../create/route";
 
 export async function POST(req: Request) {
   try {
@@ -11,21 +11,26 @@ export async function POST(req: Request) {
     const { userEmail } = await req.json();
     
     // find order on the database
-    const survey: UserSchema | null = await db.user.findUnique({
+    const user = await db.user.findUnique({
       where: {
         email: userEmail,
       },
-      include: {
-        surveys: true,
-        products: true,
-        giveaways: true
+      select: {
+        surveys: {
+          select: {
+            reviews: {
+              include: { giveaway: true, survey: true }
+            }
+          }
+        },
       }
     })
+    const reviews: ReviewsSchema[] | undefined = user?.surveys.flatMap(survey => survey.reviews)
 
     // Document not found
-    if (!survey) return NextResponse.json(survey, { status: 404 });
+    if (!reviews) return NextResponse.json(reviews, { status: 404 });
     // Return Document
-    return NextResponse.json(survey, { status: 200 });
+    return NextResponse.json(reviews, { status: 200 });
   } catch (error) {
     console.log("[GET SURVEY]", error);
     return new NextResponse("Internal Server Error", { status: 500 }); // Handle errors
