@@ -72,7 +72,7 @@ export default function AccountSet({ className }: HTMLAttributes<HTMLElement>) {
 
 
 
-export function NavAccountSet() {
+export function NavAccountSet({ className }: HTMLAttributes<HTMLElement>) {
   return (
     <Set />
   )
@@ -83,8 +83,8 @@ export function NavAccountSet() {
     return (
       <>
         {isSignedIn
-          ? (<AccountSet className="justify-around"/>)
-          : (<NotSignedIn className="flex justify-center" />)
+          ? (<AccountSet className={cn("flex justify-around", className)}/>)
+          : (<NotSignedIn className={cn("flex justify-center", className)} />)
         }
       </>
     )
