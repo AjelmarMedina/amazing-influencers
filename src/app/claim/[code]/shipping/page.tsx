@@ -4,6 +4,10 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
+import { GiveawaySchema } from "@/app/api/giveaways/get/route"
+import { OrderSchema } from "@/app/api/orders/get/route"
+import { ShippingInfoSchema } from "@/app/api/reviews/create/route"
+import { SurveySchema } from "@/app/api/surveys/get/route"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -14,8 +18,11 @@ import {
   FormMessage
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { ToastAction } from "@/components/ui/toast"
+import { useToast } from "@/components/ui/use-toast"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { Suspense } from "react"
+import { Suspense, useState } from "react"
+import { ReviewForm } from "../rate/page"
 
 const formSchema = z.object({
   fullName: z.string().min(2, "Name is too short").max(256, "Name is too long"),
@@ -40,23 +47,55 @@ function Shipping() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const review = JSON.parse(atob(searchParams.get("review") ?? ""));
+  const [
+    encodedOrder,
+    encodedReview,
+    encodedSurvey,
+    encodedGift
+  ] = [
+    searchParams.get("order"),
+    searchParams.get("review"),
+    searchParams.get("survey"),
+    searchParams.get("gift")
+  ];
+  const { toast } = useToast();
+  const [order, setOrder] = useState<OrderSchema>();
+  const [review, setReview] = useState<ReviewForm>();
+  const [survey, setSurvey] = useState<SurveySchema>();
+  const [gift, setGift] = useState<GiveawaySchema>();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      fullName: review?.name,
-      email: review?.email,
-      contactNum: review?.phoneNum,
     },
   })
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     // ✅ This will be type-safe and validated.
-    const params = new URLSearchParams(searchParams);
-    const base64 = btoa(JSON.stringify(values));
-    params.append("shipping", base64);
-    router.push(`${pathname.replace("shipping", "thanks")}?${params.toString()}`)
+    prepareReview();
+    if (!order || !review || !survey || !gift) return;
+    const shipping: ShippingInfoSchema = values;
+    submitReview(order, review, survey, gift, shipping)
+  }
+
+  function prepareReview() {
+    if (!encodedOrder || !encodedReview || !encodedSurvey || !encodedGift)
+      toast({
+        title: "Something went wrong...",
+        description: "Please reload the page.",
+        variant: "destructive",
+        action: (
+          <ToastAction altText="Reload" onClick={location.reload}>
+            Reload
+          </ToastAction>
+        ),
+      });
+    else {
+      setOrder(JSON.parse(Buffer.from(encodedOrder, "base64").toString()));
+      setReview(JSON.parse(Buffer.from(encodedReview, "base64").toString()));
+      setSurvey(JSON.parse(Buffer.from(encodedSurvey, "base64").toString()));
+      setGift(JSON.parse(Buffer.from(encodedGift, "base64").toString()));
+    }
   }
 
   return(
@@ -180,6 +219,40 @@ function Shipping() {
     </Form>
   )
 
+  async function submitReview(order: OrderSchema, submittedReview: ReviewForm, survey: SurveySchema, gift: GiveawaySchema, shippingInfo: ShippingInfoSchema) {
+    // prepare request
+    const apiUrl = "/api/reviews/create";
+    const requestData = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        order,
+        submittedReview,
+        survey,
+        gift,
+        shippingInfo,
+      }),
+    };
+
+    try {
+      // Get order from database
+      const response = await fetch(apiUrl, requestData);
+
+      // Error on POST
+      if (!response.ok) throw new Error(`Error [${response.status}]: ${response.statusText}`);
+      
+      router.push(`${pathname.replace("shipping", "thanks")}`)
+    } catch (err) {
+      console.log(err);
+      toast({
+        title: "Something went wrong...",
+        description: "Please reload the page.",
+        variant: "destructive",
+      });
+    }
+  }
 
 }
 

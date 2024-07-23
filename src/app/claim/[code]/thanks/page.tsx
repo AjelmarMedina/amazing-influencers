@@ -1,15 +1,11 @@
 "use client"
 
-import { z } from "zod"
+import { Button } from "@/components/ui/button";
 
-import { Button } from "@/components/ui/button"
+import Image from "next/image";
 import Link from "next/link";
-import Image from "next/image"
 
-const formSchema = z.object({
-})
-
-export default function Rate() {
+export default function Thanks() {
   return(
     <div className="space-y-8 flex flex-col items-stretch bg-white p-5 rounded-xl w-full text-center">
       <Image 
@@ -28,7 +24,5 @@ export default function Rate() {
       </Button>
     </div>
   )
-
-
 }
 

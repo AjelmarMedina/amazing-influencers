@@ -1,5 +1,6 @@
 "use client"
 
+import { ProductSchema } from "@/app/api/products/get/route";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -15,24 +16,8 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 
-type productsData = [
-  {
-    product: string;
-    type: string;
-    id: string;
-    image: string;
-  }
-]
-
 export default function Page() {
-  const data: productsData = [
-    {
-      product: "Hydrating Serum",
-      type: "Physical Product",
-      id: "3523",
-      image: "/dashboard/product-placeholder.png",
-    }
-  ]
+  const data: Array<ProductSchema> = []
 
   return (
     <div className="max-w-full flex flex-col w-full space-y-4">
@@ -64,13 +49,13 @@ export default function Page() {
                 <TableCell className="flex flex-row items-center">
                   <Image
                     alt="Product Image"
-                    src={row.image}
+                    src={"/dashboard/product-placeholder.png"}
                     width={48}
                     height={48}
                     className="mr-4 min-w-12 max-h-12 aspect-square"
                   />
                   <div className="flex flex-col justify-start">
-                    <p className="text-base">{row.product}</p>
+                    <p className="text-base">{row.name}</p>
                     <p className="text-sm">ID: <span className="bg-F0F0F0 text-red-500">{row.id}</span></p>
                   </div>
                 </TableCell>

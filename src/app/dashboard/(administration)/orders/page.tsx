@@ -1,5 +1,6 @@
 "use client"
 
+import { OrderSchema } from "@/app/api/orders/get/route";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -10,20 +11,6 @@ import {
 } from "@/components/ui/table";
 
 export default function Page() {
-  interface OrderSchema {
-    id: string;
-    date: string;
-    email: string;
-    name: string;
-    phone: string;
-    surveyCode: string;
-    marketplace: string;
-    product: string;
-    surveyUrl: string;
-    campaign: string;
-    createdAt: string;
-  }
-  
   const data: Array<OrderSchema> = [];
 
   return (

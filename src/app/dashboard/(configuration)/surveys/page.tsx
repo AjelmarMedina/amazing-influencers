@@ -1,52 +1,27 @@
-"use client"
-
 import { Button } from "@/components/ui/button";
 import {
   Table,
-  TableBody,
   TableCell,
   TableHeader,
   TableRow
 } from "@/components/ui/table";
 import {
-  AreaChartIcon,
-  DownloadIcon,
-  ExternalLinkIcon,
-  InfoIcon,
-  PlayIcon,
-  PlusIcon,
-  SquarePenIcon,
-  TrashIcon
+  PlusIcon
 } from "lucide-react";
-
-type surveysData = [
-  {
-    name: string;
-    started: number;
-    completed: number;
-    ratio: number;
-    code: string;
-  }
-]
+import Link from "next/link";
+import SampleOrderNumber from "./SampleOrderNumber";
+import SurveyTable from "./SurveyTable";
 
 export default function Page() {
-  const data: surveysData = [
-    {
-      name: "my survey",
-      started: 1,
-      completed: 0,
-      ratio: 0.0,
-      code: "3f5ed2",
-    }
-  ]
-
   return (
     <div className="max-w-full flex flex-col w-full space-y-4">
       <header className="flex flex-row justify-between">
         <h1 className="font-bold text-2xl">Surveys</h1>
-        <Button className="space-x-2">
-          <PlusIcon />
-          Create Survey
+        <Button className="space-x-2" asChild>
+          <Link href={"/dashboard/surveys/new"}>
+            <PlusIcon />
+            Create Survey
+          </Link>
         </Button>
       </header>
       <div className="shadow-md rounded-xl overflow-auto">
@@ -65,58 +40,10 @@ export default function Page() {
                 <TableCell></TableCell>
               </TableRow>
           </TableHeader>
-          <TableBody className="bg-white">
-            {data.map((row, index) => (
-              <TableRow key={index} className="font-medium">
-                <TableCell className="">{row.name}</TableCell>
-                <TableCell>{row.started}</TableCell>
-                <TableCell>{row.completed}</TableCell>
-                <TableCell>{row.ratio.toFixed(2)}</TableCell>
-                <TableCell>
-                  <Button variant={"ghost"} className="px-2">
-                    <AreaChartIcon />
-                  </Button>
-                </TableCell>
-                <TableCell className="text-red-500">{row.code}</TableCell>
-                <TableCell>
-                  <Button variant={"ghost"} className="px-2">
-                    <SquarePenIcon />
-                  </Button>
-                </TableCell>
-                <TableCell>
-                  <Button variant={"ghost"} className="px-2">
-                    <ExternalLinkIcon />
-                  </Button>
-                </TableCell>
-                <TableCell>
-                  <Button variant={"ghost"} className="px-2">
-                    <DownloadIcon />
-                  </Button>
-                </TableCell>
-                <TableCell>
-                  <div className="flex flex-row flex-wrap">
-                    <Button variant={"ghost"} className="text-red-500 hover:text-red-500/90 px-2">
-                      <TrashIcon/>
-                    </Button>
-                    <Button variant={"ghost"} className="text-green-500 hover:text-green-500/90 px-2">
-                      <PlayIcon/>
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
+          <SurveyTable />
         </Table>
       </div>
-      <section className="shadow-md rounded-xl bg-white p-6 flex flex-col md:flex-row justify-center md:justify-between space-y-4 md:space-y-0 md:items-center">
-        <div className="flex flex-col md:flex-row justify-center md:items-center space-y-4 md:space-y-0 md:space-x-4">
-          <InfoIcon className="text-white block self-center" fill="#20c997" />
-          <p>To test surveys, use order number <span className="text-[#DAB42B]">888-5049177-9546820</span> for any marketplace. </p>
-        </div>
-        <Button onClick={() => navigator.clipboard.writeText("888-5049177-9546820")}>
-          Copy Order Number
-        </Button>
-      </section>
+      <SampleOrderNumber />
     </div>
   )
 }

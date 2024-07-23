@@ -1,0 +1,112 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  email     String     @unique
+  company   String
+  firstName String
+  lastName  String
+  products  Product[]
+  surveys   Survey[]
+  orders    Order[]
+  giveaways Giveaway[]
+}
+
+model Product {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  productId String
+  name      String
+  type      String
+  userId    String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  orders    Order[]
+  surveys   Survey[]
+}
+
+model Survey {
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  surveyCode  String     @unique
+  name        String
+  started     Int
+  completed   Int
+  ratio       Float
+  userId      String     @db.ObjectId // `products` - product purchased for the order
+  user        User       @relation(fields: [userId], references: [id])
+  productId   String     @db.ObjectId // `products` - product purchased for the order
+  product     Product    @relation(fields: [productId], references: [id])
+  giveawayIds String[]   @db.ObjectId
+  giveaways   Giveaway[] @relation(fields: [giveawayIds], references: [id])
+  orders      Order[]
+  reviews     Review[]
+}
+
+model Order {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  orderNum    String   @unique @db.ObjectId
+  date        DateTime
+  email       String
+  fullName    String
+  phone       String
+  marketplace String
+  campaign    String
+  created     DateTime
+  surveyCode  String   @unique @db.ObjectId // `surveys` - survey code is fetched based on the product of the specific order
+  survey      Survey   @relation(fields: [surveyCode], references: [id])
+  productId   String   @db.ObjectId // `products` - product purchased for the order
+  product     Product  @relation(fields: [productId], references: [id])
+  userId      String   @db.ObjectId // `users` - products ordered from
+  user        User     @relation(fields: [userId], references: [id])
+  review      Review?
+}
+
+model Giveaway {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  type      String
+  status    String
+  userId    String   @db.ObjectId // `users`
+  user      User     @relation(fields: [userId], references: [id])
+  surveyIds String[] @db.ObjectId
+  surveys   Survey[] @relation(fields: [surveyIds], references: [id])
+  reviews   Review[]
+}
+
+model Review {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  orderNum     String // `orders` - order nums are unique for each purchase
+  rating       Int
+  reviewerInfo Reviewer
+  review       String
+  shippingInfo Shipping
+  date         DateTime
+  orderId      String   @unique @db.ObjectId
+  order        Order    @relation(fields: [orderId], references: [id])
+  giveawayId   String   @db.ObjectId // `giveaways` - selected giveaway
+  giveaway     Giveaway @relation(fields: [giveawayId], references: [id])
+  surveyId     String   @db.ObjectId // `surveys` - survey conducted for the review
+  survey       Survey   @relation(fields: [surveyId], references: [id])
+}
+
+type Reviewer {
+  name  String
+  phone String
+  email String
+}
+
+type Shipping {
+  fullName      String
+  contactNum   String
+  email         String
+  address1      String
+  address2      String?
+  city          String
+  stateProvince String
+  zipCode       String
+}

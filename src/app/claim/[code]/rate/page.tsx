@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
+import { SurveySchema } from "@/app/api/surveys/get/route"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -16,19 +17,18 @@ import {
 import { Input } from "@/components/ui/input"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Textarea } from "@/components/ui/textarea"
+import { ToastAction } from "@/components/ui/toast"
+import { toast } from "@/components/ui/use-toast"
 import Image from "next/image"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { Suspense, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 
-const orders = [
-  {
-    orderId: "888-5049177-9546820",
-    name: "Hydrating Serum",
-  },
-]
+export type ReviewForm = z.infer<typeof formSchema>;
 
 const formSchema = z.object({
-  rating: z.preprocess((val) => Number(val), z.number()),
+  rating: z.coerce
+    .number()
+    .refine((val) => Number(val) > 0, "Leave a rating..."),
   name: z.string().min(2, "Name too short").max(256, "Name too long"),
   phoneNum: z.string().regex(/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/, "Invalid Phone number"),
   email: z.string().email(),
@@ -47,7 +47,26 @@ function Rate() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams()
-  const order = orders.find((row) => row.orderId === searchParams.get("code"));
+  const encodedSurvey = searchParams.get("survey");
+  const [productName, setProductName] = useState<string>();
+
+  useEffect(() => {
+    if (!encodedSurvey)
+      toast({
+        title: "Something went wrong...",
+        description: "Please reload the page.",
+        variant: "destructive",
+        action: (
+          <ToastAction altText="Reload" onClick={location.reload}>
+            Reload
+          </ToastAction>
+        ),
+      });
+    else {
+      const parsedSurvey: SurveySchema = JSON.parse(Buffer.from(encodedSurvey, "base64").toString());
+      setProductName(parsedSurvey.product?.name ?? "")
+    }
+  }, [encodedSurvey])
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -58,9 +77,9 @@ function Rate() {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     // ✅ This will be type-safe and validated.
-    const params = new URLSearchParams();
-    const base64 = btoa(JSON.stringify(values));
-    params.set("review", base64);
+    const params = new URLSearchParams(searchParams);
+    const encodedvalues = Buffer.from(JSON.stringify(values)).toString("base64");
+    params.set("review", encodedvalues);
     router.push(`${pathname.replace("rate", "paste")}?${params.toString()}`)
   }
 
@@ -80,7 +99,7 @@ function Rate() {
             height={100}
             className="self-center"
           />
-          <h2>{order?.name}</h2>
+          <h2>{productName}</h2>
         </article>
         <Ratings />
         <div className="grid grid-cols-2 gap-4">
@@ -118,7 +137,7 @@ function Rate() {
             <FormItem className="flex flex-col space-y-4">
               <FormLabel className="">Email</FormLabel>
               <FormControl>
-                <Input placeholder="you@example.com" {...field} />
+                <Input placeholder="you@example.com" type="email" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -141,6 +160,7 @@ function Rate() {
       </form>
     </Form>
   )
+
 
   function Ratings() {
     const [rating, setRating] = useState<number>(0);
@@ -177,7 +197,7 @@ function Rate() {
                         className="text-4xl hover:cursor-pointer"
                         style={{
                           color: 
-                            currentRating <= (hover || field.value)
+                            currentRating <= (hover || Number(field.value))
                               ? "#ffc107"
                               : "#e4e5e9"
                         }}
