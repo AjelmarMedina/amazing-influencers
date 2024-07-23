@@ -3,30 +3,23 @@
 import db from "@/lib/prisma";
 
 import { NextResponse } from "next/server";
-import { UserSchema } from "../../users/create/route";
-
-export type GiveawaySchema = {
-  id: string
-  name: string
-  type: string
-  status: string
-  userId: string
-  user?: UserSchema
-}
+import { GiveawaySchema } from "../route";
 
 export async function POST(req: Request) {
   try {
     // detsrtucture data from the incoming request
-    const { userId } = await req.json();
-    // TODO: Change identifier to survey id
+    const { userEmail } = await req.json();
     
-    // find order on the database
-    const giveaways: Array<GiveawaySchema> | null = await db.giveaway.findMany({
+    // find all giveaways on the database
+    const userGiveaways = await db.user.findUnique({
       where: {
-        userId: userId,
+        email: userEmail,
       },
-      include: { user: true }
+      select: { 
+        giveaways: true
+      }
     })
+    const giveaways: GiveawaySchema[] | undefined = userGiveaways?.giveaways;
 
     // Document not found
     if (!giveaways) return NextResponse.json(giveaways, { status: 404 });
