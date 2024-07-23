@@ -1,5 +1,24 @@
 import { GiveawaySchema } from "@/app/api/giveaways/get/route";
 import { ProductSchema } from "@/app/api/products/get/route";
+import { SurveySchema } from "@/app/api/surveys/get/route";
+
+export async function getSurvey(surveyCode: string): Promise<SurveySchema | null> {
+  const apiUrl = "/api/surveys/get";
+  const requestData = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      surveyCode
+    }),
+  };
+
+  const response = await fetch(apiUrl, requestData);
+  const survey: SurveySchema | null = await response.json();
+
+  return survey
+}
 
 export function getAllProducts([userEmail, key]: string[]): Promise<ProductSchema[]> {
   // prepare request

@@ -1,7 +1,7 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { usePathname, useRouter } from 'next/navigation'
+import { notFound, usePathname, useRouter } from 'next/navigation'
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
@@ -17,28 +17,34 @@ import {
   FormMessage
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { useToast } from "@/components/ui/use-toast"
-import { ToastAction } from "@radix-ui/react-toast"
+import { getSurvey } from "@/lib/data"
 import Image from "next/image"
 import { Suspense, useState } from "react"
+import useSWR from "swr"
 
 export default function Page({ params }: { params: { code: string } }) {
-  return (
-    <Suspense>
-      <Claim surveyCode={params.code} />
-    </Suspense>
-  )
+  const { data: survey, isLoading } = useSWR<SurveySchema | null, any, any>(params.code, getSurvey);
+
+  if (!isLoading && !survey) {
+    notFound();
+  }
+  if (survey) {
+    return (
+      <Suspense>
+        <Claim survey={survey} />
+      </Suspense>
+    )
+  }
 }
 
 const formSchema = z.object({
   orderNum: z.string({ required_error: "Enter your Order Number" }).min(16, "Enter an Order Number").trim(),
 })
 
-function Claim({ surveyCode }: { surveyCode: string }) {
+function Claim({ survey }: { survey: SurveySchema }) {
   const params = new URLSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-  const { toast } = useToast();
   const [submitDisabled, setSubmitDisabled] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -116,57 +122,15 @@ function Claim({ surveyCode }: { surveyCode: string }) {
       if (!response.ok) throw new Error("Something went wrong...");
   
       const encodedOrder = Buffer.from(JSON.stringify(order)).toString("base64");
+      const encodedSurvey = Buffer.from(JSON.stringify(survey)).toString("base64");
       params.set("order", encodedOrder);
-      handleSurveyFetch()
+      params.set("survey", encodedSurvey);
+      router.push(`${pathname}/rate?${params.toString()}`)
     } catch (err) {
       setSubmitDisabled(false);
       form.setError("orderNum", {message: `${err}`});
       console.log(err);
     }
   }
-
-  async function handleSurveyFetch() {
-    // prepare request
-    const apiUrl = "/api/surveys/get";
-    const requestData = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        surveyCode
-      }),
-    };
-
-    try {
-      // Get order from database
-      const response = await fetch(apiUrl, requestData);
-      const survey: SurveySchema | null = await response.json();
-
-      // Survey not found
-      if (!survey) throw new Error();
-      // Error on POST
-      if (!response.ok) throw new Error();
-  
-      // Forward survey to next step
-      const encodedSurvey = Buffer.from(JSON.stringify(survey)).toString("base64");
-      params.set("survey", encodedSurvey);
-      router.push(`${pathname}/rate?${params.toString()}`)
-    } catch (err) {
-      console.log(err);
-      setSubmitDisabled(false);
-      toast({
-        title: "Something went wrong...",
-        description: "Please reload the page.",
-        variant: "destructive",
-        action: (
-          <ToastAction altText="Reload" onClick={location.reload}>
-            Reload
-          </ToastAction>
-        ),
-      })
-    }
-  }
-  
 
 }

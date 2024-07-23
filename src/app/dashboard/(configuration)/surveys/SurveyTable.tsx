@@ -6,6 +6,7 @@ import { TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { useToast } from "@/components/ui/use-toast";
 import { useUser } from "@clerk/nextjs";
 import { AreaChartIcon, DownloadIcon, ExternalLinkIcon, PlayIcon, SquarePenIcon, TrashIcon } from 'lucide-react';
+import Link from "next/link";
 import { Suspense, useEffect, useState } from "react";
 
 export default function SurveyTable() {
@@ -70,8 +71,10 @@ function Surveys() {
             </Button>
           </TableCell>
           <TableCell>
-            <Button variant={"ghost"} className="px-2">
-              <ExternalLinkIcon />
+            <Button variant={"ghost"} className="px-2" asChild>
+              <Link href={`/claim/${survey.surveyCode}`}>
+                <ExternalLinkIcon />
+              </Link>
             </Button>
           </TableCell>
           <TableCell>
