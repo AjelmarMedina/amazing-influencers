@@ -1,15 +1,16 @@
 "use client";
 
-import { SurveySchema } from "@/app/api/surveys/get/route";
+import { UserSchema } from "@/app/api/users/create/route";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { useToast } from "@/components/ui/use-toast";
+import { getUser } from "@/lib/data";
 import { useUser } from "@clerk/nextjs";
 import { AreaChartIcon, DownloadIcon, ExternalLinkIcon, PlayIcon, SquarePenIcon, TrashIcon } from 'lucide-react';
 import Image from "next/image";
 import Link from "next/link";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense } from "react";
+import useSwr from 'swr';
 import { renderSVG } from 'uqr';
 
 export default function SurveyTable() {
@@ -22,41 +23,11 @@ export default function SurveyTable() {
 
 function Surveys() {
   const { user } = useUser();
-  const { toast } = useToast();
-  const [data, setData] = useState<Array<SurveySchema>>([]);
-
-  useEffect(() => {
-    if (data.length) return;
-    const userEmail = user?.primaryEmailAddress?.emailAddress;
-    
-    // prepare request
-    const apiUrl = "/api/surveys/get/all";
-    const requestData = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        userEmail
-      }),
-    };
-
-    // Get data from database
-    fetch(apiUrl, requestData)
-      .then(res => res.json())
-      .then((data: Array<SurveySchema>) => setData(data))
-      .catch(e => {
-        toast({
-          title: "Something went wrong",
-        });
-        console.log(e);
-        
-      })
-  }, [data.length, toast, user?.primaryEmailAddress]);
+  const { data } = useSwr<UserSchema, any, any>(user?.primaryEmailAddress?.emailAddress, getUser)
 
   return (
     <TableBody className="bg-white">
-      {data.map((survey, index) => (
+      {data?.surveys?.map((survey, index) => (
         <TableRow key={index} className="font-medium">
           <TableCell>{survey.name}</TableCell>
           <TableCell>{survey.started}</TableCell>

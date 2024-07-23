@@ -1,6 +1,25 @@
 import { GiveawaySchema } from "@/app/api/giveaways/get/route";
 import { ProductSchema } from "@/app/api/products/get/route";
 import { SurveySchema } from "@/app/api/surveys/get/route";
+import { UserSchema } from "@/app/api/users/create/route";
+
+export async function getUser(userEmail: string): Promise<UserSchema | null> {
+  const apiUrl = "/api/users/get";
+  const requestData = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      userEmail
+    }),
+  };
+
+  const response = await fetch(apiUrl, requestData);
+  const user: UserSchema | null = await response.json();
+
+  return user;
+}
 
 export async function getSurvey(surveyCode: string): Promise<SurveySchema | null> {
   const apiUrl = "/api/surveys/get";
@@ -20,7 +39,7 @@ export async function getSurvey(surveyCode: string): Promise<SurveySchema | null
   return survey
 }
 
-export function getAllProducts([userEmail, key]: string[]): Promise<ProductSchema[]> {
+export async function getAllProducts([userEmail, key]: string[]): Promise<ProductSchema[]> {
   // prepare request
   const requestData = {
     method: "POST",
@@ -33,13 +52,13 @@ export function getAllProducts([userEmail, key]: string[]): Promise<ProductSchem
   };
 
   // Get order from database
-  return fetch("/api/products/get/all", requestData)
-    .then(res => res.json())
-    .then((json: ProductSchema[]) => json)
+  const res = await fetch("/api/products/get/all", requestData);
+  const json = await res.json();
+  return json;
 
 }
 
-export function getAllGiveaways([userEmail, key]: string[]): Promise<GiveawaySchema[]> {
+export async function getAllGiveaways([userEmail, key]: string[]): Promise<GiveawaySchema[]> {
   // prepare request
   const requestData = {
     method: "POST",
@@ -52,13 +71,13 @@ export function getAllGiveaways([userEmail, key]: string[]): Promise<GiveawaySch
   };
 
   // Get order from database
-  return fetch("/api/giveaways/get/all", requestData)
-    .then(res => res.json())
-    .then((json: GiveawaySchema[]) => json)
+  const res = await fetch("/api/giveaways/get/all", requestData);
+  const json = await res.json();
+  return json;
 
 }
 
-export function createSurvey(name: string, userId: string, productId: string, giveawayIds: string[]): Promise<boolean> {
+export async function createSurvey(name: string, userId: string, productId: string, giveawayIds: string[]): Promise<boolean> {
   // prepare request
   const requestData = {
     method: "POST",
@@ -71,6 +90,6 @@ export function createSurvey(name: string, userId: string, productId: string, gi
   };
 
   // Get order from database
-  return fetch("/api/surveys/create", requestData)
-    .then(res => res.ok)
+  const res = await fetch("/api/surveys/create", requestData);
+  return res.ok;
 }
