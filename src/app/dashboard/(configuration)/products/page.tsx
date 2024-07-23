@@ -4,6 +4,7 @@ import {
   TableHeader,
   TableRow
 } from "@/components/ui/table";
+import { Suspense } from "react";
 import NewProductForm from "./NewProductForm";
 import ProductsTable from "./ProductsTable";
 
@@ -12,7 +13,9 @@ export default function Page() {
     <div className="max-w-full flex flex-col w-full space-y-4">
       <header className="flex flex-row justify-between">
         <h1 className="font-bold text-2xl">Products</h1>
-        <NewProductForm />
+        <Suspense>
+          <NewProductForm />
+        </Suspense>
       </header>
       <div className="shadow-md rounded-xl overflow-auto grid">
         <Table className="">

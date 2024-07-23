@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { createProduct, getUser } from "@/lib/data";
+import { FetcherResponse } from "swr/_internal";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -32,7 +33,7 @@ const formSchema = z.object({
 })
 
 export default function NewProductForm() {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
 
   return (
     <Dialog open={open}>
@@ -57,7 +58,12 @@ export default function NewProductForm() {
 
   function Content() {
     const { user: clerkUser } = useUser();
-    const { data: user } = useSWR<UserSchema, any, any>(clerkUser?.primaryEmailAddress?.emailAddress, getUser)
+    
+    const { data: user, mutate } = useSWR<UserSchema, any, any>(
+      clerkUser?.primaryEmailAddress?.emailAddress,
+      (arg: string): FetcherResponse<any> => getUser(arg),
+      { refreshInterval: 800 }
+    )
   
     const form = useForm<z.infer<typeof formSchema>>({
       resolver: zodResolver(formSchema),
@@ -69,7 +75,7 @@ export default function NewProductForm() {
       if (!userId) return;
   
       createProduct(userId, values.name, values.type)
-        .then((val) => setOpen(false));
+        .then(val => setOpen(false))
     }
   
     return (

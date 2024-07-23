@@ -8,6 +8,7 @@ import { useUser } from "@clerk/nextjs";
 import { PenBox, TrashIcon } from 'lucide-react';
 import { Suspense } from "react";
 import useSwr from 'swr';
+import { FetcherResponse } from "swr/_internal";
 
 export default function ProductsTable() {
   return (
@@ -19,7 +20,8 @@ export default function ProductsTable() {
 
 function Products() {
   const { user } = useUser();
-  const { data: products } = useSwr<ProductSchema[], any, any>([user?.primaryEmailAddress?.emailAddress], getAllProducts)
+  const fetcher = (arg: string[]): FetcherResponse<any> => getAllProducts(arg);
+  const { data: products, mutate } = useSwr<ProductSchema[], any, any>([user?.primaryEmailAddress?.emailAddress], fetcher, { refreshInterval: 800 })
 
   if (products) return (
     <TableBody className="bg-white">
@@ -31,7 +33,7 @@ function Products() {
             <Button variant={"ghost"} className="">
               <PenBox/>
             </Button>
-            <Button variant={"ghost"} className="text-red-500 hover:text-red-500/90" onClick={() => deleteProduct(product.id)}>
+            <Button variant={"ghost"} className="text-red-500 hover:text-red-500/90" onClick={() => deleteProduct(product.id).then(val => mutate())}>
               <TrashIcon/>
             </Button>
           </TableCell>

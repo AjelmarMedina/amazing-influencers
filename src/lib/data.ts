@@ -150,3 +150,22 @@ export async function deleteProduct(id: string): Promise<Boolean> {
   const res = await fetch(apiUrl, requestData);
   return res.ok;
 }
+
+export async function deleteSurvey(id: string): Promise<Boolean> {
+  // prepare request
+  const apiUrl = "/api/surveys/delete";
+  const requestData = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      id
+    }),
+  };
+  
+  // Get order from database
+  const res = await fetch(apiUrl, requestData);
+  return res.ok;
+}
+

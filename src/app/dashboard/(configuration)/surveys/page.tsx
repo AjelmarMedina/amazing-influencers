@@ -24,8 +24,8 @@ export default function Page() {
           </Link>
         </Button>
       </header>
-      <div className="shadow-md rounded-xl overflow-auto">
-        <Table className="shadow-md rounded-xl md:table-fixed">
+      <div className="shadow-md rounded-xl overflow-auto grid">
+        <Table className="shadow-md rounded-xl">
           <TableHeader className="bg-[#F3F4F6]">
               <TableRow className="text-[#343A40] font-bold">
                 <TableCell>Name</TableCell>
