@@ -1,5 +1,6 @@
 import { GiveawaySchema } from "@/app/api/giveaways/get/route";
 import { ProductSchema } from "@/app/api/products/get/route";
+import { ReviewsSchema } from "@/app/api/reviews/create/route";
 import { SurveySchema } from "@/app/api/surveys/get/route";
 import { UserSchema } from "@/app/api/users/create/route";
 
@@ -74,7 +75,24 @@ export async function getAllGiveaways([userEmail, key]: string[]): Promise<Givea
   const res = await fetch("/api/giveaways/get/all", requestData);
   const json = await res.json();
   return json;
+}
 
+export async function getAllReviews(userEmail: string): Promise<ReviewsSchema[] | undefined> {
+  // prepare request
+  const requestData = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      userEmail
+    }),
+  };
+
+  // Get order from database
+  const res = await fetch("/api/reviews/get/all", requestData);
+  const json = await res.json();
+  return json;
 }
 
 export async function createSurvey(name: string, userId: string, productId: string, giveawayIds: string[]): Promise<boolean> {
