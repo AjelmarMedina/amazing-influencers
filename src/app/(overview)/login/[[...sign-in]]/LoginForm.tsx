@@ -21,7 +21,7 @@ export default function LoginForm() {
 }
 
 const formSchema = z.object({
-  email: z.string().email().min(2, "Email is too short").max(128, "Email is too long"),
+  email: z.string().trim().email().min(2, "Email is too short").max(128, "Email is too long"),
   password: z.string().min(8, "Password must be at least 8 characters long").max(128, "Password is too long"),
 })
 
