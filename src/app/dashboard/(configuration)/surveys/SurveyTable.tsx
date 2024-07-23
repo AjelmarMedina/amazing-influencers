@@ -2,12 +2,15 @@
 
 import { SurveySchema } from "@/app/api/surveys/get/route";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { useToast } from "@/components/ui/use-toast";
 import { useUser } from "@clerk/nextjs";
 import { AreaChartIcon, DownloadIcon, ExternalLinkIcon, PlayIcon, SquarePenIcon, TrashIcon } from 'lucide-react';
+import Image from "next/image";
 import Link from "next/link";
 import { Suspense, useEffect, useState } from "react";
+import { renderSVG } from 'uqr';
 
 export default function SurveyTable() {
   return (
@@ -78,9 +81,7 @@ function Surveys() {
             </Button>
           </TableCell>
           <TableCell>
-            <Button variant={"ghost"} className="px-2">
-              <DownloadIcon />
-            </Button>
+            <QrDialog title={survey.name} code={survey.surveyCode} />
           </TableCell>
           <TableCell>
             <div className="flex flex-row flex-wrap">
@@ -95,5 +96,37 @@ function Surveys() {
         </TableRow>
       ))}
     </TableBody>
+  )
+}
+
+function QrDialog({ title, code }: { title: string, code: string }) {
+  const url = `${window.location.href.replace("/dashboard/surveys", "/claim")}/${code}`;
+  const svg = renderSVG(url)
+  const blob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" })
+
+  return (
+    <Dialog>
+      <DialogTrigger className="px-2">
+        <DownloadIcon />
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Download {title}</DialogTitle>
+        </DialogHeader>
+        <section className="flex flex-col items-center space-y-6">
+          <Image 
+            src={`data:image/svg+xml;utf8,${encodeURIComponent(svg)}`}
+            alt={"QR Code"}
+            width={256}
+            height={256}
+          />
+          <Button asChild>
+            <a href={URL.createObjectURL(blob)} download={`${code}.svg`} >
+              Download QR Code
+            </a>
+          </Button>
+        </section>
+      </DialogContent>
+    </Dialog>
   )
 }
