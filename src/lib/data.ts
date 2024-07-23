@@ -25,6 +25,24 @@ export async function createProduct(userId: string, name: string, type: string):
   return res.ok;
 }
 
+export async function createGiveaway(userId: string, name: string, type: string, status: boolean): Promise<Boolean> {
+  // prepare request
+  const apiUrl = "/api/giveaways/create";
+  const requestData = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      userId, name, type, status
+    }),
+  };
+  
+  // Get order from database
+  const res = await fetch(apiUrl, requestData);
+  return res.ok;
+}
+
 export async function createSurvey(name: string, userId: string, productId: string, giveawayIds: string[]): Promise<boolean> {
   // prepare request
   const requestData = {
@@ -136,6 +154,24 @@ export async function getAllReviews(userEmail: string): Promise<ReviewsSchema[] 
 export async function deleteProduct(id: string): Promise<Boolean> {
   // prepare request
   const apiUrl = "/api/products/delete";
+  const requestData = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      id
+    }),
+  };
+  
+  // Get order from database
+  const res = await fetch(apiUrl, requestData);
+  return res.ok;
+}
+
+export async function deleteGiveaway(id: string): Promise<Boolean> {
+  // prepare request
+  const apiUrl = "/api/giveaways/delete";
   const requestData = {
     method: "POST",
     headers: {

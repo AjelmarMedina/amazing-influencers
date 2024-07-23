@@ -10,6 +10,7 @@ import { z } from "zod";
 
 import { UserSchema } from "@/app/api/users/create/route";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import {
   Form,
@@ -20,7 +21,7 @@ import {
   FormMessage
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { createProduct, getUser } from "@/lib/data";
+import { createGiveaway, getUser } from "@/lib/data";
 import { FetcherResponse } from "swr/_internal";
 
 const formSchema = z.object({
@@ -30,9 +31,10 @@ const formSchema = z.object({
   type: z.string().min(2, {
     message: "Text too short",
   }),
+  status: z.boolean().default(false),
 })
 
-export default function NewProductForm() {
+export default function NewGiveawayForm() {
   const [open, setOpen] = useState(false);
 
   return (
@@ -40,7 +42,7 @@ export default function NewProductForm() {
       <DialogTrigger asChild>
         <Button className="space-x-2" onClick={() => setOpen(true)}>
           <PlusIcon />
-          Create Product
+          Create Giveaway
         </Button>
       </DialogTrigger>
       <DialogContent>
@@ -73,7 +75,7 @@ export default function NewProductForm() {
       const userId = user?.id;
       if (!userId) return;
   
-      createProduct(userId, values.name, values.type)
+      createGiveaway(userId, values.name, values.type, values.status)
         .then(val => setOpen(false))
     }
   
@@ -85,7 +87,7 @@ export default function NewProductForm() {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Product Name</FormLabel>
+                <FormLabel>Giveaway Name</FormLabel>
                 <FormControl>
                   <Input placeholder="" {...field} />
                 </FormControl>
@@ -98,11 +100,37 @@ export default function NewProductForm() {
             name="type"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Product Type</FormLabel>
+                <FormLabel>Giveaway Type</FormLabel>
                 <FormControl>
                   <Input placeholder="" {...field} />
                 </FormControl>
                 <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="status"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Giveaway Status</FormLabel>
+                <div className="flex flex-row w-max text-nowrap space-x-4">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="flex flex-col w-max text-nowrap">
+                    {field.value ? (
+                      <FormLabel>Active</FormLabel>
+                    ) : (
+                      <FormLabel>Inactive</FormLabel>
+                    )}
+                    <FormMessage />
+                  </div>
+                </div>
+
               </FormItem>
             )}
           />
