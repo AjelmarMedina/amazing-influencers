@@ -59,8 +59,8 @@ function Register() {
   function onSubmit(values: z.infer<typeof registerFormSchema>) {
     // ✅ This will be type-safe and validated.
     setClerkError("");
-    setUserInfo(values)
-    handleSignUp();
+    setUserInfo(values);
+    handleSignUp(values);
   }
   
   return (
@@ -161,15 +161,14 @@ function Register() {
     </Form>
   )
 
-  async function handleSignUp() {
+  async function handleSignUp(userInfo: z.infer<typeof registerFormSchema>) {
 
     if (!isLoaded) return;
-    if (!userInfo) return;
 
-    const emailAddress = userInfo.email.trimEnd();
-    const password = userInfo.password.trimEnd();
-    const firstName = userInfo.firstName.trimEnd();
-    const lastName = userInfo.lastName.trimEnd();
+    const emailAddress = userInfo?.email.trimEnd();
+    const password = userInfo?.password.trimEnd();
+    const firstName = userInfo?.firstName.trimEnd();
+    const lastName = userInfo?.lastName.trimEnd();
   
     try {
       await signUp.create({
@@ -254,13 +253,12 @@ function Register() {
     async function handleVerify(code: string) {
 
       if (!isLoaded) return;
-      if (!userInfo) return;
 
       // Prepare user info
-      const emailAddress = userInfo.email;
-      const company = userInfo.companyName;
-      const firstName = userInfo.firstName;
-      const lastName = userInfo.lastName;
+      const emailAddress = userInfo?.email;
+      const company = userInfo?.companyName;
+      const firstName = userInfo?.firstName;
+      const lastName = userInfo?.lastName;
 
       // Prepare POST request
       const apiUrl = "/api/users/create";
