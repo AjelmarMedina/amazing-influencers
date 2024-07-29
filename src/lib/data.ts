@@ -5,6 +5,46 @@ import { SurveySchema } from "@/app/api/surveys/get/route";
 import { UserSchema } from "@/app/api/users/create/route";
 import { nanoid } from "nanoid";
 
+export async function createOrder(
+  userId: string, 
+  orderNum: string,
+  date: Date,
+  email: string,
+  fullName: string,
+  phone: string,
+  marketplace: string,
+  campaign: string,
+  created: Date,
+  productId: string,
+  surveyId: string,
+) {
+  // prepare request
+  const apiUrl = "/api/orders/create";
+  const requestData = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      orderNum,
+      date,
+      email,
+      fullName,
+      phone,
+      marketplace,
+      campaign,
+      created,
+      productId,
+      surveyId,
+      userId
+    }),
+  };
+  
+  // Get order from database
+  const res = await fetch(apiUrl, requestData);
+  return res.ok;
+}
+
 export async function createProduct(userId: string, name: string, type: string): Promise<Boolean> {
   const productId = nanoid(4);
 
@@ -94,6 +134,24 @@ export async function getSurvey(surveyCode: string): Promise<SurveySchema | null
   const survey: SurveySchema | null = await response.json();
   
   return survey
+}
+
+export async function getAllOrders(userEmail: string): Promise<UserSchema | null> {
+  const apiUrl = "/api/orders/get/all";
+  const requestData = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      userEmail
+    }),
+  };
+
+  const response = await fetch(apiUrl, requestData);
+  const user: UserSchema | null = await response.json();
+
+  return user;
 }
 
 export async function getAllProducts([userEmail, key]: string[]): Promise<ProductSchema[]> {

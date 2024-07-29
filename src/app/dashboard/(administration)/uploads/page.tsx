@@ -28,9 +28,13 @@ import {
   TableHeader,
   TableRow
 } from "@/components/ui/table";
+import { createOrder, getSurvey, getUser } from "@/lib/data";
+import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PaperclipIcon, StickyNoteIcon } from "lucide-react";
-import { Suspense } from "react";
+import { useRouter } from "next/navigation";
+import Papa from 'papaparse';
+import { Suspense, useState } from "react";
 import { DropzoneOptions } from "react-dropzone";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -101,12 +105,17 @@ export default function Page() {
 
 const formSchema = z.object({
   platform: z.string({ required_error: "Platform required"}),
-  values: z.instanceof(Array<File>, { message: "File is required" })
+  file: z.instanceof(Array<File>, { message: "File is required" })
     .refine((file: Array<File>) => "text/csv".includes(file?.[0]?.type), "CSV files are only accepted"),
   campaign: z.string().optional(),
 })
 
 function UploadForm() {
+  const router = useRouter();
+  const [submitDisabled, setSubmitDisabled] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const { user } = useUser();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -120,9 +129,39 @@ function UploadForm() {
     },
   } satisfies DropzoneOptions;
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     // ✅ This will be type-safe and validated.
-    console.log(values)
+    setSubmitDisabled(true);
+    const csv: File = values.file[0];
+    const userDb = await getUser(user?.primaryEmailAddress?.emailAddress ?? "");
+
+    Papa.parse(csv, {
+      header: true,
+      dynamicTyping: true,
+      complete: (results) => {
+        const orders = results.data;
+        orders.map(async (order: any, index) => {
+          if (index >= orders.length - 1) return;
+          const survey = await getSurvey(order["Survey Code"]);
+          if (!survey) return;
+          createOrder(
+            userDb?.id ?? "",
+            order["Order ID"],
+            new Date(order["Date"]),
+            order["Email"],
+            order["Name"],
+            order["Phone"],
+            order["Marketplace"],
+            order["Campaign"],
+            new Date(order["Created At"]),
+            order["Product"],
+            survey.id
+          )
+        })
+        setSubmitSuccess(true);
+        router.push("/dashboard/orders");
+      },
+    });
   }
 
   return (
@@ -149,7 +188,7 @@ function UploadForm() {
         />
         <FormField
           control={form.control}
-          name="values"
+          name="file"
           render={({ field }) => (
             <FormItem>
               <FileUploader
@@ -202,7 +241,12 @@ function UploadForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" className="md:self-start">Submit</Button>
+        <Button type="submit" className="md:self-start" disabled={submitDisabled}>Submit</Button>
+        {submitSuccess && (
+          <p className="text-primary">
+            CSV submitted!
+          </p>
+        )}
       </form>
     </Form>
   )

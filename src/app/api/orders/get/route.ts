@@ -20,8 +20,8 @@ export type OrderSchema = {
   created: Date
   productId: string
   product?: ProductSchema
-  surveyCode: string
-  surveys?: SurveySchema
+  surveyId: string
+  survey?: SurveySchema
   userId: string
   user?: UserSchema
 }
