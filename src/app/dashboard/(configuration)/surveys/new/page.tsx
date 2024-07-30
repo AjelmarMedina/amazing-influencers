@@ -15,7 +15,7 @@ export default function Page() {
         </Button>
         <h1 className="font-bold text-2xl">Create a new Survey</h1>
       </header>
-      <section className="shadow-md bg-white rounded-xl flex flex-col items-stretch">
+      <section className="max-w-full shadow-md bg-white rounded-xl flex flex-col items-stretch">
         <header className="p-6 bg-[rgba(243,244,246,0.8)] justify-start">
           <h2 className="font-bold text-base">New Survey </h2>
         </header>

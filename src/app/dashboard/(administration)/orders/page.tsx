@@ -1,6 +1,7 @@
 "use client"
 
 import { OrderSchema } from "@/app/api/orders/get/route";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -9,9 +10,15 @@ import {
   TableHeader,
   TableRow
 } from "@/components/ui/table";
+import { getAllOrders } from "@/lib/data";
+import { useUser } from "@clerk/nextjs";
+import { ExternalLinkIcon } from "lucide-react";
+import Link from "next/link";
+import useSwr from 'swr';
 
 export default function Page() {
-  const data: Array<OrderSchema> = [];
+  const { user } = useUser();
+  const { data } = useSwr<OrderSchema[], any, any>(user?.primaryEmailAddress?.emailAddress, getAllOrders);
 
   return (
     <div className="max-w-full flex flex-col w-full space-y-4">
@@ -45,16 +52,32 @@ export default function Page() {
               </TableRow>
           </TableHeader>
           <TableBody className="bg-white">
-            {!data.length && (
+            {!data?.length && (
               <TableRow>
                 <TableCell colSpan={11} className="py-4">
                   None found
                 </TableCell>
               </TableRow>
             )}
-            {data.map((row, index) => (
+            {data?.map((order: OrderSchema, index) => (
               <TableRow key={index} className="font-medium">
-                {/* TODO: Table Row */}
+                <TableCell>{order.orderNum}</TableCell>
+                <TableCell>{order.date.toString()}</TableCell>
+                <TableCell>{order.email}</TableCell>
+                <TableCell>{order.fullName}</TableCell>
+                <TableCell>{order.phone}</TableCell>
+                <TableCell>{order.survey?.surveyCode}</TableCell>
+                <TableCell>{order.marketplace}</TableCell>
+                <TableCell>{order.product?.productId}</TableCell>
+                <TableCell>
+                  <Button asChild variant={"ghost"} >
+                    <Link href={`https://amazing-influencers.vercel.app/claim/${order.survey?.surveyCode}`} target="_blank">
+                      <ExternalLinkIcon />
+                    </Link>
+                  </Button>
+                </TableCell>
+                <TableCell>{order.campaign}</TableCell>
+                <TableCell>{order.created.toString()}</TableCell>
               </TableRow>
             ))}
           </TableBody>

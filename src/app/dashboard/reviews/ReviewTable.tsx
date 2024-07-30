@@ -46,7 +46,7 @@ export default function ReviewTable() {
             </TableRow>
         </TableHeader>
         <TableBody className="bg-white">
-          {reviews.map((review: ReviewsSchema) => (
+          {reviews?.map((review: ReviewsSchema) => (
             <TableRow key={review.id} className="font-medium">
               <TableCell><Rating stars={review.rating} /></TableCell>
               <TableCell className="max-w-xs hyphens-auto">{review.review}</TableCell>
