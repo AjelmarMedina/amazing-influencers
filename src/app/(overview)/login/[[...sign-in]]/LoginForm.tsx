@@ -82,7 +82,7 @@ function Login() {
         <Button type="submit" className="bg-primary hover:bg-primary/90" disabled={verifying}>
           Submit
         </Button>
-        <Link href={"/"} className="text-center text-primary hover:underline">
+        <Link href="/forget-password" className="text-center text-primary hover:underline">
           Forgot your password?
         </Link>
       </form>
