@@ -36,7 +36,7 @@ export default function NewProductForm() {
   const [open, setOpen] = useState(false);
 
   return (
-    <Dialog open={open}>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="space-x-2" onClick={() => setOpen(true)}>
           <PlusIcon />
