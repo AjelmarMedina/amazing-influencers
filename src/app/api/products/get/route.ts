@@ -1,7 +1,6 @@
 "use server";
 
 import db from "@/lib/prisma";
-
 import { NextResponse } from "next/server";
 import { UserSchema } from "../../users/create/route";
 
@@ -25,7 +24,7 @@ export async function POST(req: Request) {
         productId: productId,
         userId: userId,
       },
-      include: { user: true }
+      include: { user: true, }
     })
 
     // Document not found

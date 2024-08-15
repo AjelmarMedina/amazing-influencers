@@ -27,10 +27,10 @@ export default function Page() {
                 Image
               </TableCell>
               <TableCell>
-                Giveaway Name
+                Name
               </TableCell>
               <TableCell>
-                Giveaway Type
+                Type
               </TableCell>
               <TableCell>
                 Status

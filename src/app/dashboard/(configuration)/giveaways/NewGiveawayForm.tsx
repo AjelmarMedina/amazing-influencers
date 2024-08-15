@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import useSWR from "swr";
 import { z } from "zod";
 
+import { GiveawaySchema } from "@/app/api/giveaways/get/route";
 import { UserSchema } from "@/app/api/users/create/route";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from '@/components/ui/checkbox';
@@ -21,8 +22,10 @@ import {
   FormMessage
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { createGiveaway, getUser } from "@/lib/data";
+import { Textarea } from "@/components/ui/textarea";
+import { createGiveaway, getUser, getAllGiveaways } from "@/lib/data";
 import { FetcherResponse } from "swr/_internal";
+import { ComboboxCreate } from "@/components/ui/combobox-create";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -31,6 +34,8 @@ const formSchema = z.object({
   type: z.string().min(2, {
     message: "Text too short",
   }),
+  description: z.string().min(9, { message: "Description too shore"}),
+  image: z.optional(z.string()),
   status: z.boolean().default(false),
 })
 
@@ -38,7 +43,7 @@ export default function NewGiveawayForm() {
   const [open, setOpen] = useState(false);
 
   return (
-    <Dialog open={open}>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="space-x-2" onClick={() => setOpen(true)}>
           <PlusIcon />
@@ -48,7 +53,7 @@ export default function NewGiveawayForm() {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            Create a new product
+            Create a new Giveaway
           </DialogTitle>
         </DialogHeader>
         <Suspense>
@@ -78,7 +83,24 @@ export default function NewGiveawayForm() {
       createGiveaway(userId, values.name, values.type, values.status)
         .then(val => setOpen(false))
     }
-  
+
+    const fetcher = (arg: string[]): FetcherResponse<any> => getAllGiveaways(arg);
+    
+    const { data: giveaways, mutate } = useSWR<GiveawaySchema[], any, any>([clerkUser?.primaryEmailAddress?.emailAddress], fetcher)
+
+    const alltypes = giveaways ? giveaways.map((val) => ( {value:val.type, label: val.type} )): []
+
+    // holds dropdown options
+    const [options, setOptions ] = useState([])
+
+    const handleCreateOptions = (val:string) =>{
+      //@ts-ignore
+      setOptions( items => [...items, {value:val, label:val}]);
+    }
+
+
+
+
     return (
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -102,12 +124,36 @@ export default function NewGiveawayForm() {
               <FormItem>
                 <FormLabel>Giveaway Type</FormLabel>
                 <FormControl>
-                  <Input placeholder="" {...field} />
+                <ComboboxCreate
+                  options={[...alltypes, ...options]}
+                  mode='single'
+                  placeholder='Select Type...'
+                  selected={field.value} // string or array
+                  onChange={(currentValue) => form.setValue('type', currentValue)}
+                  onCreate={(value) => {
+                    handleCreateOptions(value);
+                  }}
+                />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
+
+        <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Description</FormLabel>
+                <FormControl>
+                  <Textarea {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <FormField
             control={form.control}
             name="status"
@@ -134,6 +180,21 @@ export default function NewGiveawayForm() {
               </FormItem>
             )}
           />
+
+        <FormField
+            control={form.control}
+            name="image"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Image</FormLabel>
+                <FormControl>
+                  <Input type="file" placeholder="" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <Button type="submit">Submit</Button>
         </form>
       </Form>

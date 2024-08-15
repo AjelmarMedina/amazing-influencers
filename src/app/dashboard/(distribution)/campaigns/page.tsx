@@ -1,18 +1,43 @@
+import { Suspense } from "react";
+
 import { Button } from "@/components/ui/button";
+import NewCampaignForm from "./NewCampaignForm";
+import CampaignTable from "./CampaignTable";
 import { PlusIcon, ShoppingBagIcon } from "lucide-react";
+import {
+  Table,
+  TableCell,
+  TableHeader,
+  TableRow
+} from "@/components/ui/table";
 
 export default function Reviews() {
   return (
-    <div className="w-full flex flex-col justify-center items-center">
-      <section className="bg-white rounded-xl shadow-lg px-6 py-10 flex flex-col justify-center items-center text-center space-y-4">
-        <ShoppingBagIcon className="text-primary w-8 h-8"/>
-        <h1 className="font-bold text-2xl">No Campaigns Created</h1>
-        <p>Put AmazingInfluencers on autopilot with outbound email and SMS review request campaigns to your customers.</p>
-        <Button className="space-x-2">
-          <PlusIcon />
-          Create Campaign
-        </Button>
-      </section>
+    <div className="max-w-full flex flex-col w-full space-y-4">
+      <header className="flex flex-row justify-between">
+        <h1 className="font-bold text-2xl">Campaigns</h1>
+        <Suspense>
+          <NewCampaignForm />
+        </Suspense>
+      </header>
+      <div className="shadow-md rounded-xl overflow-auto grid">
+        <Table className="">
+          <TableHeader className="bg-[#F3F4F6] *:min-w-max *:text-nowrap">
+            <TableRow className="text-[#343A40] font-bold">
+              <TableCell>
+                Name
+              </TableCell>
+              <TableCell>
+                Delay
+              </TableCell>
+              <TableCell>
+                Actions
+              </TableCell>
+            </TableRow>
+          </TableHeader>
+          <CampaignTable />
+        </Table>
+      </div>
     </div>
   )
 }

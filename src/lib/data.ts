@@ -83,6 +83,24 @@ export async function createGiveaway(userId: string, name: string, type: string,
   return res.ok;
 }
 
+export async function createCampaign(userId: string, name: string, delay: string,): Promise<Boolean> {
+  // prepare request
+  const apiUrl = "/api/campaigns/create";
+  const requestData = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      userId, name, delay,
+    }),
+  };
+  
+  // Get order from database
+  const res = await fetch(apiUrl, requestData);
+  return res.ok;
+}
+
 export async function createSurvey(name: string, userId: string, productId: string, giveawayIds: string[]): Promise<boolean> {
   // prepare request
   const requestData = {
@@ -170,8 +188,8 @@ export async function getAllProducts([userEmail, key]: string[]): Promise<Produc
   const res = await fetch("/api/products/get/all", requestData);
   const json = await res.json();
   return json;
-
 }
+
 
 export async function getAllGiveaways([userEmail, key]: string[]): Promise<GiveawaySchema[]> {
   // prepare request
@@ -187,6 +205,24 @@ export async function getAllGiveaways([userEmail, key]: string[]): Promise<Givea
   
   // Get order from database
   const res = await fetch("/api/giveaways/get/all", requestData);
+  const json = await res.json();
+  return json;
+}
+
+export async function getAllCampaigns([userEmail, key]: string[]): Promise<GiveawaySchema[]> {
+  // prepare request
+  const requestData = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      userEmail
+    }),
+  };
+  
+  // Get order from database
+  const res = await fetch("/api/campaigns/get/all", requestData);
   const json = await res.json();
   return json;
 }

@@ -17,15 +17,16 @@ model User {
   surveys   Survey[]
   orders    Order[]
   giveaways Giveaway[]
+  campaigns Campaign[]
 }
 
 model Product {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   productId String
   name      String
-  type      String
   userId    String   @db.ObjectId
   user      User     @relation(fields: [userId], references: [id])
+  type      String
   orders    Order[]
   surveys   Survey[]
 }
@@ -94,6 +95,16 @@ model Review {
   survey       Survey   @relation(fields: [surveyId], references: [id])
 }
 
+model Campaign {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  delay        String
+  userId       String   @db.ObjectId // `users`
+  user         User     @relation(fields: [userId], references: [id])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
 type Reviewer {
   name  String
   phone String
@@ -110,3 +121,4 @@ type Shipping {
   stateProvince String
   zipCode       String
 }
+
