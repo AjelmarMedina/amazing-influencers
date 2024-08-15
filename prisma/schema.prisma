@@ -27,7 +27,6 @@ model Product {
   userId    String   @db.ObjectId
   user      User     @relation(fields: [userId], references: [id])
   type      String
-  orders    Order[]
   surveys   Survey[]
 }
 
