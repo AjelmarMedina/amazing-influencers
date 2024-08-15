@@ -143,19 +143,12 @@ function UploadForm() {
         orders.map(async (order: any, index) => {
           if (index >= orders.length - 1) return;
           const survey = await getSurvey(order["Survey Code"]);
-          if (!survey) return;
+          if (!survey || !userDb?.id) return;
           createOrder(
-            userDb?.id ?? "",
+            userDb.id,
             order["Order ID"],
             new Date(order["Date"]),
-            order["Email"],
             order["Name"],
-            order["Phone"],
-            order["Marketplace"],
-            order["Campaign"],
-            new Date(order["Created At"]),
-            order["Product"],
-            survey.id
           )
         })
         setSubmitSuccess(true);

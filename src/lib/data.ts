@@ -9,14 +9,7 @@ export async function createOrder(
   userId: string, 
   orderNum: string,
   date: Date,
-  email: string,
   fullName: string,
-  phone: string,
-  marketplace: string,
-  campaign: string,
-  created: Date,
-  productId: string,
-  surveyId: string,
 ) {
   // prepare request
   const apiUrl = "/api/orders/create";
@@ -28,14 +21,7 @@ export async function createOrder(
     body: JSON.stringify({
       orderNum,
       date,
-      email,
       fullName,
-      phone,
-      marketplace,
-      campaign,
-      created,
-      productId,
-      surveyId,
       userId
     }),
   };

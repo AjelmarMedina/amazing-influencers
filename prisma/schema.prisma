@@ -52,16 +52,7 @@ model Order {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
   orderNum    String   @unique
   date        DateTime
-  email       String
   fullName    String
-  phone       String
-  marketplace String
-  campaign    String
-  created     DateTime
-  surveyId    String   @db.ObjectId // `surveys` - survey code is fetched based on the product of the specific order
-  survey      Survey?  @relation(fields: [surveyId], references: [id])
-  productId   String   @db.ObjectId // `products` - product purchased for the order
-  product     Product? @relation(fields: [productId], references: [id])
   userId      String   @db.ObjectId // `users` - products ordered from
   user        User?    @relation(fields: [userId], references: [id])
   review      Review?
