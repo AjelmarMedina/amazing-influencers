@@ -5,11 +5,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { PlusIcon } from "lucide-react";
 import { Suspense, useState } from "react";
 import { useForm } from "react-hook-form";
-import useSWR, { preload } from "swr";
+import useSWR from "swr";
 import { z } from "zod";
 
+
 import { UserSchema } from "@/app/api/users/create/route";
-import { ProductSchema } from "@/app/api/products/get/route";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import {
@@ -21,21 +21,20 @@ import {
   FormMessage
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { createProduct, getUser, getAllProducts } from "@/lib/data";
+import { createCampaign, getUser, getAllCampaigns } from "@/lib/data";
 import { FetcherResponse } from "swr/_internal";
-import { ComboboxCreate } from "@/components/ui/combobox-create";
-   
+
+
 const formSchema = z.object({
   name: z.string().min(2, {
     message: "Name too short",
   }),
-  type: z.string().min(2, {
-    message: "Text too short",
-  }),
-  image: z.optional(z.string()),
+  delay: z.string().refine((val) => !Number.isNaN(parseInt(val, 10)), {
+    message: "Expected number, received a string"
+  })
 })
 
-export default function NewProductForm() {
+export default function NewCampaignForm() {
   const [open, setOpen] = useState(false);
 
   return (
@@ -43,13 +42,13 @@ export default function NewProductForm() {
       <DialogTrigger asChild>
         <Button className="space-x-2" onClick={() => setOpen(true)}>
           <PlusIcon />
-          Create Product
+          Create Campaign
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            Create a new product
+            Create a new Campaign
           </DialogTitle>
         </DialogHeader>
         <Suspense>
@@ -60,39 +59,26 @@ export default function NewProductForm() {
   )
 
   function Content() {
-
     const { user: clerkUser } = useUser();
-    const [options, setOptions ] = useState([])
-   
-    const handleCreateOptions = (val:string) =>{
-      // @ts-ignore
-      setOptions( items => [...items, {value:val, label:val}]);
-    }
-
+    
     const { data: user } = useSWR<UserSchema, any, any>(
       clerkUser?.primaryEmailAddress?.emailAddress,
       (arg: string): FetcherResponse<any> => getUser(arg),
     )
-
-    const fetcher = (arg: string[]): FetcherResponse<any> => getAllProducts(arg);
-    
-    const { data: products, mutate } = useSWR<ProductSchema[], any, any>([clerkUser?.primaryEmailAddress?.emailAddress], fetcher)
-
-    const alltypes = products ? products.map((prod) => ( {value:prod.type, label: prod.type} )): []
-   
+  
     const form = useForm<z.infer<typeof formSchema>>({
       resolver: zodResolver(formSchema),
     })
     
     function onSubmit(values: z.infer<typeof formSchema>) {
-      // ✅ This will be type-safe and validated.
+      // This will be type-safe and validated.
       const userId = user?.id;
       if (!userId) return;
   
-      createProduct(userId, values.name, values.type)
+      createCampaign(userId, values.name, values.delay)
         .then(val => setOpen(false))
     }
-  
+
     return (
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -101,7 +87,8 @@ export default function NewProductForm() {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Product Name</FormLabel>
+                <FormLabel>Campaign Name</FormLabel>
+
                 <FormControl>
                   <Input placeholder="" {...field} />
                 </FormControl>
@@ -111,36 +98,15 @@ export default function NewProductForm() {
           />
           <FormField
             control={form.control}
-            name="type"
+            name="delay"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Product Type</FormLabel>
+                <FormLabel>Campaign Delay</FormLabel>
+                <p className="text-xs tracking-tight text-gray-700 my-4">After a customer Order is added to GetReviews via CSV Upload or API, we&apos;ll wait this many days before beginning a review request campaign. We recommend at least 30 days for digital products, or 7 days for physical products.</p>
                 <FormControl>
-                <ComboboxCreate
-                  options={[...alltypes, ...options]}
-                  mode='single'
-                  placeholder='Select Type...'
-                  selected={field.value} // string or array
-                  onChange={(currentValue) => form.setValue('type', currentValue)}
-                  onCreate={(value) => {
-                    handleCreateOptions(value);
-                  }}
-                  
-                />
+                <FormControl>
+                  <Input type="number" placeholder="Delay(in days)" {...field} />
                 </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-        <FormField
-            control={form.control}
-            name="image"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Product Image</FormLabel>
-                <FormControl>
-                  <Input type="file" placeholder="" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
