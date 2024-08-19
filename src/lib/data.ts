@@ -1,4 +1,5 @@
 import { GiveawaySchema } from "@/app/api/giveaways/get/route";
+import { OrderSchema } from "@/app/api/orders/get/route";
 import { ProductSchema } from "@/app/api/products/get/route";
 import { ReviewsSchema } from "@/app/api/reviews/create/route";
 import { SurveySchema } from "@/app/api/surveys/get/route";
@@ -9,14 +10,7 @@ export async function createOrder(
   userId: string, 
   orderNum: string,
   date: Date,
-  email: string,
   fullName: string,
-  phone: string,
-  marketplace: string,
-  campaign: string,
-  created: Date,
-  productId: string,
-  surveyId: string,
 ) {
   // prepare request
   const apiUrl = "/api/orders/create";
@@ -28,14 +22,7 @@ export async function createOrder(
     body: JSON.stringify({
       orderNum,
       date,
-      email,
       fullName,
-      phone,
-      marketplace,
-      campaign,
-      created,
-      productId,
-      surveyId,
       userId
     }),
   };
@@ -154,7 +141,7 @@ export async function getSurvey(surveyCode: string): Promise<SurveySchema | null
   return survey
 }
 
-export async function getAllOrders(userEmail: string): Promise<UserSchema | null> {
+export async function getAllOrders(userEmail: string): Promise<OrderSchema[] | null> {
   const apiUrl = "/api/orders/get/all";
   const requestData = {
     method: "POST",
@@ -167,9 +154,9 @@ export async function getAllOrders(userEmail: string): Promise<UserSchema | null
   };
 
   const response = await fetch(apiUrl, requestData);
-  const user: UserSchema | null = await response.json();
+  const orders: OrderSchema[] | null = await response.json();
 
-  return user;
+  return orders;
 }
 
 export async function getAllProducts([userEmail, key]: string[]): Promise<ProductSchema[]> {

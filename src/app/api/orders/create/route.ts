@@ -11,16 +11,8 @@ export async function POST(req: Request) {
     const {
       orderNum,
       date,
-      email,
       fullName,
-      phone,
-      marketplace,
-      campaign,
-      created,
-      productId,
-      surveyId,
       userId,
-      user
     }: OrderSchema = await req.json();
     
     // find all giveaways on the database
@@ -28,14 +20,7 @@ export async function POST(req: Request) {
       data: {
         orderNum: orderNum,
         date: date,
-        email: email,
         fullName: fullName,
-        phone: phone,
-        marketplace: marketplace,
-        campaign: campaign ?? "",
-        created: created,
-        productId: productId,
-        surveyId: surveyId,
         userId: userId,
       }
     })

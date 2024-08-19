@@ -40,15 +40,7 @@ export default function Page() {
               <TableRow className="text-[#343A40] font-bold">
                 <TableCell>Order ID</TableCell>
                 <TableCell>Date</TableCell>
-                <TableCell>Email</TableCell>
                 <TableCell>Name</TableCell>
-                <TableCell>Phone</TableCell>
-                <TableCell>Survey Code</TableCell>
-                <TableCell>Marketplace</TableCell>
-                <TableCell>Product</TableCell>
-                <TableCell>Survey URL</TableCell>
-                <TableCell>Campaign</TableCell>
-                <TableCell>Created At</TableCell>
               </TableRow>
           </TableHeader>
           <TableBody className="bg-white">
@@ -63,21 +55,7 @@ export default function Page() {
               <TableRow key={index} className="font-medium">
                 <TableCell>{order.orderNum}</TableCell>
                 <TableCell>{order.date.toString()}</TableCell>
-                <TableCell>{order.email}</TableCell>
                 <TableCell>{order.fullName}</TableCell>
-                <TableCell>{order.phone}</TableCell>
-                <TableCell>{order.survey?.surveyCode}</TableCell>
-                <TableCell>{order.marketplace}</TableCell>
-                <TableCell>{order.product?.productId}</TableCell>
-                <TableCell>
-                  <Button asChild variant={"ghost"} >
-                    <Link href={`https://amazing-influencers.vercel.app/claim/${order.survey?.surveyCode}`} target="_blank">
-                      <ExternalLinkIcon />
-                    </Link>
-                  </Button>
-                </TableCell>
-                <TableCell>{order.campaign}</TableCell>
-                <TableCell>{order.created.toString()}</TableCell>
               </TableRow>
             ))}
           </TableBody>
