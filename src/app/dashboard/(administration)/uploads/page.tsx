@@ -157,6 +157,12 @@ function UploadForm() {
     });
   }
 
+  const onFileChangeHandler = async (event: React.ChangeEvent<HTMLInputElement>) =>{
+    if(!event.target.files){ return; }
+
+    console.log(event.target.files[0]);
+  }
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 flex flex-col items-stretch">

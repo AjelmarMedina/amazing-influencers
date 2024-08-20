@@ -16,7 +16,8 @@ export async function POST(req: Request) {
     }: OrderSchema = await req.json();
     
     // find all giveaways on the database
-    const order: OrderSchema = await db.order.create({
+    const order = await db.order.create({
+      //@ts-ignore
       data: {
         orderNum: orderNum,
         date: date,

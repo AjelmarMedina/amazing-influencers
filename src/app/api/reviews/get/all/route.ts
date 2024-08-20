@@ -19,7 +19,7 @@ export async function POST(req: Request) {
         surveys: {
           select: {
             reviews: {
-              include: { giveaway: true, survey: true }
+              include: { giveaway: true, survey: true, }
             }
           }
         },

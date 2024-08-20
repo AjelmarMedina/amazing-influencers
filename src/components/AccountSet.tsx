@@ -27,10 +27,10 @@ export default function AccountSet({ className }: HTMLAttributes<HTMLElement>) {
   
     return (
       <div className={cn("flex flex-row space-x-4", className)}>
-        <Button variant={"ghost"} className="w-10 h-10 relative px-0">
+        {/* <Button variant={"ghost"} className="w-10 h-10 relative px-0">
           <BellIcon />
           <span className="absolute block w-3 h-3 rounded-full bg-red-500 border border-white top-0 right-0" />
-        </Button>
+        </Button> */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant={"ghost"} className="w-10 h-10 relative hover:bg-transparent hover:opacity-90 px-0">

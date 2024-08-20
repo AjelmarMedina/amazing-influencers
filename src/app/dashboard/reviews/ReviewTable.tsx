@@ -4,6 +4,8 @@ import { ReviewsSchema } from "@/app/api/reviews/create/route";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHeader, TableRow } from "@/components/ui/table";
 import { getAllReviews } from "@/lib/data";
+import { ShippingInfo } from "./components/shipping";
+import { ReviewerInfo } from "./components/reviewer"
 
 import { useUser } from "@clerk/nextjs";
 import { ClipboardCheckIcon, StarIcon, TruckIcon } from "lucide-react";
@@ -55,14 +57,18 @@ export default function ReviewTable() {
               <TableCell>{review.giveaway?.name}</TableCell>
               <TableCell>{review.orderNum}</TableCell>
               <TableCell className="text-center">
-                <Button >
-                  <TruckIcon />
-                </Button>
+                <ShippingInfo data={review.shippingInfo}>
+                  <Button >
+                    <TruckIcon />
+                  </Button >
+                </ShippingInfo>
               </TableCell>
               <TableCell className="text-center">
-                <Button >
-                  <ClipboardCheckIcon />
-                </Button>
+                <ReviewerInfo data={review.reviewerInfo}>
+                  <Button >
+                    <ClipboardCheckIcon />
+                  </Button>
+                </ReviewerInfo>
               </TableCell>
             </TableRow>
           ))}
