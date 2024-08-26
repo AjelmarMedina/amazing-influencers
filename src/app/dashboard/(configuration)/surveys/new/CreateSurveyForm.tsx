@@ -220,7 +220,7 @@ export default function CreateSurveyForm() {
               <FormItem>
                 <FormLabel>Background Image</FormLabel>
                 <FileUploader
-                  value={field.value}
+                  value={field.value ?? null}
                   onValueChange={field.onChange}
                   dropzoneOptions={dropzone}
                   reSelect={true}
@@ -259,7 +259,7 @@ export default function CreateSurveyForm() {
               <FormItem>
                 <FormLabel>Logo Image</FormLabel>
                 <FileUploader
-                  value={field.value}
+                  value={field.value ?? null}
                   onValueChange={field.onChange}
                   dropzoneOptions={dropzone}
                   reSelect={true}
