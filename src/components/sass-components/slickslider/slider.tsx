@@ -36,9 +36,9 @@ export default function SimpleSlider({ className }: React.HtmlHTMLAttributes<HTM
             <p className={style.pedit}>Lead designer</p>
             <img src={"/images/clarityblock.png"} alt="" className={style.coma} />
             <p className={style.peditt}>
-              "Amazing Influencers made it so easy! 
+              &quot;Amazing Influencers made it so easy! 
               I scanned the QR code, shared my feedback, and instantly received rewards. 
-              Great way to support my favorite brands while saving money!"{" "}
+              Great way to support my favorite brands while saving money!&quot;
             </p>
           </div>
           <div className={style.mainslider2}>
@@ -49,9 +49,9 @@ export default function SimpleSlider({ className }: React.HtmlHTMLAttributes<HTM
             <p className={style.p2edit}>Lead designer</p>
             <img src={"/images/clarityblock.png"} alt="" className={style.coma1} />
             <p className={style.p2editt}>
-              "I completed a quick survey and got a free gift right away! 
+              &quot;I completed a quick survey and got a free gift right away! 
               Love how Amazing Influencers rewards customers for sharing their experiences. 
-              Highly recommend for anyone looking for great deals!"
+              Highly recommend for anyone looking for great deals!&quot;
             </p>
           </div>
           <div className={style.mainslider}>
@@ -62,10 +62,10 @@ export default function SimpleSlider({ className }: React.HtmlHTMLAttributes<HTM
             <p className={style.pedit}>Lead designer</p>
             <img src={"/images/clarityblock.png"} alt="" className={style.coma} />
             <p className={style.peditt}>
-              "Scanning the QR code was so simple! 
+              &quot;Scanning the QR code was so simple! 
               I filled out a short survey and earned cashback instantly.
               A fantastic way to save money and help businesses improve. 
-              Definitely worth it!"
+              Definitely worth it!&quot;
             </p>
           </div>
         </Slider>
