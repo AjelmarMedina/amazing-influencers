@@ -224,7 +224,6 @@ export default function CreateSurveyForm() {
                   onValueChange={field.onChange}
                   dropzoneOptions={dropzone}
                   reSelect={true}
-                  optional
                 >
                   {!field.value?.length && (
                     <FileInput>
@@ -263,7 +262,6 @@ export default function CreateSurveyForm() {
                   onValueChange={field.onChange}
                   dropzoneOptions={dropzone}
                   reSelect={true}
-                  optional
                 >
                   {!field.value?.length && (
                     <FileInput>
