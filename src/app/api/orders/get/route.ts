@@ -12,16 +12,7 @@ export type OrderSchema = {
   id: string
   orderNum: string
   date: Date
-  email: string
   fullName: string
-  phone: string
-  marketplace: string
-  campaign: string
-  created: Date
-  productId: string
-  product?: ProductSchema
-  surveyId: string
-  survey?: SurveySchema
   userId: string
   user?: UserSchema
 }

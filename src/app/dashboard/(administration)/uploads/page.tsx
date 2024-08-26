@@ -56,7 +56,7 @@ export default function Page() {
       <header className="flex flex-col items-stretch space-y-4">
         <h1 className="font-bold text-2xl">Upload Center</h1>
         <p>
-          Upload values that you would like to allow into your review flow. A &quot;value&quot; is a string of letters and/or numbers that act as your respondents password into your GetReviews survey. For example, if you upload the value &quot;12345,&quot; this value would be entitled to one entry into your GetReviews survey. If someone entered &quot;12346,&quot; they would be denied entry into your survey. Only respondents who enter a value that you&apos;ve uploaded here will be allowed to enter your review flow.
+          Upload values that you would like to allow into your review flow. A &quot;value&quot; is a string of letters and/or numbers that act as your respondents password into your Amazing Influencers survey.
         </p>
       </header>
       <section className="shadow-md bg-white rounded-xl flex flex-col items-stretch">
@@ -143,25 +143,24 @@ function UploadForm() {
         orders.map(async (order: any, index) => {
           if (index >= orders.length - 1) return;
           const survey = await getSurvey(order["Survey Code"]);
-          if (!survey) return;
+          if (!survey || !userDb?.id) return;
           createOrder(
-            userDb?.id ?? "",
+            userDb.id,
             order["Order ID"],
             new Date(order["Date"]),
-            order["Email"],
             order["Name"],
-            order["Phone"],
-            order["Marketplace"],
-            order["Campaign"],
-            new Date(order["Created At"]),
-            order["Product"],
-            survey.id
           )
         })
         setSubmitSuccess(true);
         router.push("/dashboard/orders");
       },
     });
+  }
+
+  const onFileChangeHandler = async (event: React.ChangeEvent<HTMLInputElement>) =>{
+    if(!event.target.files){ return; }
+
+    console.log(event.target.files[0]);
   }
 
   return (

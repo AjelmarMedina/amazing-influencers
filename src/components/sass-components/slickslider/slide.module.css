@@ -1,0 +1,136 @@
+.mainsec {
+  height: -webkit-max-content;
+  height: -moz-max-content;
+  height: max-content;
+  padding: 40px;
+}
+
+.subdiv {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  gap: 50px;
+}
+
+@media screen and (max-width: 1200px) {
+  .subdiv {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+  }
+}
+
+.mainslider {
+  margin-top: 20px;
+  position: relative;
+}
+
+.pic2edit {
+  position: absolute;
+  top: 10px;
+  left: 30px;
+}
+
+.profile1edit {
+  z-index: 1;
+  position: absolute;
+  top: 0;
+  left: 150px;
+}
+
+.coma {
+  z-index: 1;
+  position: absolute;
+  top: 120px;
+  left: 180px;
+}
+
+.h2edit {
+  z-index: 1;
+  position: absolute;
+  top: 80px;
+  left: 100px;
+}
+
+.pedit {
+  z-index: 1;
+  position: absolute;
+  top: 105px;
+  left: 150px;
+}
+
+.peditt {
+  font-size: 13px;
+  max-width: 220px;
+  z-index: 1;
+  position: absolute;
+  top: 150px;
+  left: 100px;
+}
+
+.mainslider2 {
+  margin-top: 20px;
+  position: relative;
+}
+
+.h3edit {
+  z-index: 1;
+  position: absolute;
+  top: 80px;
+  left: 80px;
+}
+
+.p2edit {
+  z-index: 1;
+  position: absolute;
+  top: 105px;
+  left: 120px;
+}
+
+.p2editt {
+  font-size: 17px;
+  max-width: 250px;
+  max-height: 150px;
+  z-index: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: absolute;
+  top: 150px;
+  left: 40px;
+}
+
+.pic3edit {
+  position: absolute;
+  top: 0px;
+  left: -20px;
+}
+
+.profile2edit {
+  z-index: 2;
+  position: absolute;
+  top: -20px;
+  left: 120px;
+}
+
+.coma1 {
+  z-index: 1;
+  position: absolute;
+  top: 120px;
+  left: 150px;
+}
+
+.editsliderr .slick-slide {
+  z-index: 0;
+}
+
+.editsliderr .slick-list {
+  z-index: 0;
+}
+/*# sourceMappingURL=slide.module.css.map */
