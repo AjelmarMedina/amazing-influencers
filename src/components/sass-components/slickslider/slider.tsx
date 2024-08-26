@@ -36,10 +36,9 @@ export default function SimpleSlider({ className }: React.HtmlHTMLAttributes<HTM
             <p className={style.pedit}>Lead designer</p>
             <img src={"/images/clarityblock.png"} alt="" className={style.coma} />
             <p className={style.peditt}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cursus nibh
-              mauris, nec turpis orci lectus maecenas. Suspendisse sed magna eget
-              nibh in turpis. Consequat duis diam lacus arcu. Faucibus venenatis
-              felis id augue sit cursus pellentesque enim{" "}
+              "Amazing Influencers made it so easy! 
+              I scanned the QR code, shared my feedback, and instantly received rewards. 
+              Great way to support my favorite brands while saving money!"{" "}
             </p>
           </div>
           <div className={style.mainslider2}>
@@ -50,7 +49,9 @@ export default function SimpleSlider({ className }: React.HtmlHTMLAttributes<HTM
             <p className={style.p2edit}>Lead designer</p>
             <img src={"/images/clarityblock.png"} alt="" className={style.coma1} />
             <p className={style.p2editt}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cursus nibh mauris, nec turpis orci lectus maecenas. Suspendisse sed magna eget nibh in turpis. Consequat duis diam lacus arcu. Faucibus venenatis felis id augue sit cursus pellentesque enim
+              "I completed a quick survey and got a free gift right away! 
+              Love how Amazing Influencers rewards customers for sharing their experiences. 
+              Highly recommend for anyone looking for great deals!"
             </p>
           </div>
           <div className={style.mainslider}>
@@ -61,10 +62,10 @@ export default function SimpleSlider({ className }: React.HtmlHTMLAttributes<HTM
             <p className={style.pedit}>Lead designer</p>
             <img src={"/images/clarityblock.png"} alt="" className={style.coma} />
             <p className={style.peditt}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cursus nibh
-              mauris, nec turpis orci lectus maecenas. Suspendisse sed magna eget
-              nibh in turpis. Consequat duis diam lacus arcu. Faucibus venenatis
-              felis id augue sit cursus pellentesque enim{" "}
+              "Scanning the QR code was so simple! 
+              I filled out a short survey and earned cashback instantly.
+              A fantastic way to save money and help businesses improve. 
+              Definitely worth it!"
             </p>
           </div>
         </Slider>

@@ -3,6 +3,7 @@ import Footer from "@/components/Footer";
 import Link from "next/link";
 import SimpleSlider from "../slickslider/slider";
 import style from "./home.module.scss";
+import { Input } from "@/components/ui/input";
 
 const Home = () => {
   return (
@@ -21,7 +22,7 @@ const Home = () => {
               Scan the QR code on your receipt and unlock exclusive offers.
             </p>
             <div className={style.btndiv}>
-              <Link href={"/claim"}><button className={style.btn1}>Find your rewards now</button></Link>
+              <Link href={"#try"}><button className={style.btn1}>Find your rewards now</button></Link>
               <Link href={"/demo"}><button className={style.btn2}>Watch The Demo</button></Link>
             </div>
           </div>
@@ -92,14 +93,14 @@ const Home = () => {
           <SimpleSlider className="bg-[rgba(32,201,151,0.05)]" />
         </section>
         <section className={style.sec3main}>
-          <div>
+          <div id="try">
             <h2 className={style.sec3h2}>
                 Try It Now
             </h2>
             <p className={style.sec3p}>
-            Scan the QR code, tell us your thoughts, and unlock exclusive rewards like instant cashbacks, discounts on future purchases, early access to new products. It&apos;s that easy!
+              Scan a QR code, and tell us your thoughts, and unlock exclusive rewards like instant cashbacks, discounts on future purchases, early access to new products. It&apos;s that easy!
             </p>
-            <button className={style.sec3btn}>Scan QR Code Now</button>
+            
           </div>
           <img src={"/images/pic6.png"} alt="" />
         </section>

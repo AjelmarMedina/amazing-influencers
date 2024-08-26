@@ -34,13 +34,13 @@ const formSchema = z.object({
   }),
   theme: z.string({ message: "Choose a theme" }),
   finePrint: z.string({ message: "Enter Fine Print" }),
-  logo: z.instanceof(Array<File>, { message: "File is required" }),
-  background: z.instanceof(Array<File>, { message: "File is required" }),
+  logo: z.instanceof(Array<File>).optional(),
+  background: z.instanceof(Array<File>).optional(),
   productId: z.string({ message: "Choose a product" }),
-  minStar: z.number(),
-  minReview: z.number(),
+  // minStar: z.number(),
+  // minReview: z.number(),
   reviewCollection: z.string({ message: "Choose an option" }),
-  giveawayDelay: z.number(),
+  // giveawayDelay: z.number(),
   giveawayId: z.string({ message: "Choose a giveaway" }),
 })
 
@@ -54,9 +54,9 @@ export default function CreateSurveyForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      minStar: 0,
-      giveawayDelay: 0,
-      minReview: 0,
+      // minStar: 0,
+      // giveawayDelay: 0,
+      // minReview: 0,
     },
   })
 
@@ -154,14 +154,8 @@ export default function CreateSurveyForm() {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value={"minimal"}>
-                      Minimal - Survey with 1 marketplace, no giveaways or advanced features
-                    </SelectItem>
                     <SelectItem value={"standard"}>
                       Standard - Survey with background and header
-                    </SelectItem>
-                    <SelectItem value={"extended"}>
-                      Extended - Survey with additional content below
                     </SelectItem>
                   </SelectContent>
                 </Select>
@@ -217,47 +211,7 @@ export default function CreateSurveyForm() {
             </FormItem>
           )}
         />
-        <div className="md:grid grid-cols-3">
-          <FormField
-            control={form.control}
-            name="minReview"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Minimum Review Word Count</FormLabel>
-                <FormControl>
-                  <Input type="number" placeholder="" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="giveawayDelay"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Giveaway Delay</FormLabel>
-                <FormControl>
-                  <Input type="number" placeholder="" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="minStar"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Minimum Star Rating</FormLabel>
-                <FormControl>
-                  <Input type="number" placeholder="" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
+        
         <div className="md:grid grid-cols-2">
           <FormField
             control={form.control}
