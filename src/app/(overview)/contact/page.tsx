@@ -18,20 +18,6 @@ export default function Contact() {
             width={282}
             height={366}
           />
-          <ul className="flex flex-col w-max space-y-6 justify-start text-lg">
-            <li className="flex flex-row space-x-4">
-              <PhoneIcon className="text-primary" />
-              <p>0900-78601</p>
-            </li>
-            <li className="flex flex-row space-x-4">
-              <MailOpenIcon className="text-primary" />
-              <p>example@gmail.com</p>
-            </li>
-            <li className="flex flex-row space-x-4">
-              <MapPinIcon className="text-primary" />
-              <p>Head quarters, Pakistan.</p>
-            </li>
-          </ul>
         </aside>
       </section>
       <Footer />
