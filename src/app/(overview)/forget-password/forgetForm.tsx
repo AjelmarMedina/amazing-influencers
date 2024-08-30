@@ -118,7 +118,7 @@ const ForgetForm: NextPage = () => {
           onChange={e => setCode(e.target.value)}
         />
 
-        <Button type="reset">Reset</Button>
+        <Button type="submit">Reset</Button>
         {error && <p>{error}</p>}
         </>
       )}  
