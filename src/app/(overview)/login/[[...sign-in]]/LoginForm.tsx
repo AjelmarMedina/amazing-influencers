@@ -108,6 +108,7 @@ function Login() {
       }
     } catch (err: any) {
       console.log(JSON.stringify(err, null, 2));
+      setVerifying(false);
       setClerkError(err.errors[0].message);
     }
   }
