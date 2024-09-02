@@ -48,7 +48,7 @@ model Survey {
 
 model Order {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  orderNum    String   @unique
+  orderNum    String   
   date        DateTime
   fullName    String
   email       String   
