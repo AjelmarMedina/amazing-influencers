@@ -51,6 +51,7 @@ model Order {
   orderNum    String   @unique
   date        DateTime
   fullName    String
+  email       String   
   userId      String   @db.ObjectId // `users` - products ordered from
   user        User?    @relation(fields: [userId], references: [id])
   review      Review?

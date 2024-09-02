@@ -12,6 +12,7 @@ export async function POST(req: Request) {
       orderNum,
       date,
       fullName,
+      email,
       userId,
     }: OrderSchema = await req.json();
     
@@ -22,6 +23,7 @@ export async function POST(req: Request) {
         orderNum: orderNum,
         date: date,
         fullName: fullName,
+        email: email,
         userId: userId,
       }
     })

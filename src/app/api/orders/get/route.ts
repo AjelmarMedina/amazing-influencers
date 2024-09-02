@@ -13,6 +13,7 @@ export type OrderSchema = {
   orderNum: string
   date: Date
   fullName: string
+  email: string
   userId: string
   user?: UserSchema
 }
