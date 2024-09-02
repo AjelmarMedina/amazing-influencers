@@ -21,12 +21,12 @@ export type OrderSchema = {
 export async function POST(req: Request) {
   try {
     // detsrtucture data from the incoming request
-    const { orderNum: string } = await req.json();
+    const { orderNum }: {orderNum: string} = await req.json();
     
     if (orderNum === "888-5049177-9546820") return NextResponse.json({orderNum: orderNum, id: new ObjectId()}, { status: 200 });
 
     // find order on the database
-    const order: OrderSchema | null = await db.order.findUnique({
+    const order: OrderSchema | null = await db.order.findFirst({
       where: {
         orderNum: orderNum,
       }
