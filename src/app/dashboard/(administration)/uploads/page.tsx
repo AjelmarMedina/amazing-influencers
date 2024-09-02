@@ -1,5 +1,6 @@
 "use client"
 
+import { UserSchema } from "@/app/api/users/create/route";
 import { Button } from "@/components/ui/button";
 import {
   FileInput,
@@ -135,16 +136,18 @@ function UploadForm() {
     // ✅ This will be type-safe and validated.
     setSubmitDisabled(true);
     const csv: File = values.file[0];
-    const userDb = await getUser(user?.primaryEmailAddress?.emailAddress ?? "");
+    const userDb: UserSchema | null = await getUser(user?.primaryEmailAddress?.emailAddress ?? "");
+    if (!userDb) return;
 
     Papa.parse(csv, {
       header: true,
       dynamicTyping: true,
       complete: (results) => {
         const orders = results.data;
-        orders.map(async (order: any, index) => {
-          if (index >= orders.length - 1) throw new Error();
-          if (!userDb?.id) throw new Error();
+        console.log(userDb?.orders);
+        orders.map((order: any, index) => {
+          if (index >= orders.length - 1) return; // last csv row is null 
+          if (userDb.orders?.find((orderDb) => orderDb.orderNum == order["Order ID"])) return; // check for duplicates
           createOrder(
             userDb.id,
             order["Order ID"],
@@ -154,7 +157,7 @@ function UploadForm() {
           )
         })
         toast({
-          title: "Orders Submitted!"
+          title: "Orders Submitted!",
         })
         router.push("/dashboard/orders");
       },
@@ -163,6 +166,7 @@ function UploadForm() {
           title: "Something went wrong...",
           variant: "destructive"
         })
+        setSubmitDisabled(false);
       }
     });
   }

@@ -27,7 +27,7 @@ const ForgetForm: NextPage = () => {
   // If the user is already signed in,
   // redirect them to the home page
   if (isSignedIn) {
-    router.push('/');
+    router.push('/dashboard');
   }
  
   // Send the password reset code to the user's email

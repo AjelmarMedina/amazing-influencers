@@ -18,7 +18,8 @@ export async function POST(req: Request) {
       include: {
         surveys: true,
         products: true,
-        giveaways: true
+        giveaways: true,
+        orders: true
       }
     })
 

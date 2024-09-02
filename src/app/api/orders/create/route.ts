@@ -18,7 +18,6 @@ export async function POST(req: Request) {
     
     // find all giveaways on the database
     const order = await db.order.create({
-      //@ts-ignore
       data: {
         orderNum: orderNum,
         date: date,
