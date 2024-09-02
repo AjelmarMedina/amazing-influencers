@@ -28,15 +28,19 @@ import {
   TableHeader,
   TableRow
 } from "@/components/ui/table";
-import { createOrder, getSurvey, getUser } from "@/lib/data";
+import { toast } from "@/components/ui/use-toast";
+import { createOrder, getAllCampaigns, getSurvey, getUser } from "@/lib/data";
 import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Campaign } from "@prisma/client";
 import { PaperclipIcon, StickyNoteIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Papa from 'papaparse';
 import { Suspense, useState } from "react";
 import { DropzoneOptions } from "react-dropzone";
 import { useForm } from "react-hook-form";
+import useSWR from "swr";
+import { FetcherResponse } from "swr/_internal";
 import { z } from "zod";
 
 export default function Page() {
@@ -104,7 +108,6 @@ export default function Page() {
 }
 
 const formSchema = z.object({
-  platform: z.string({ required_error: "Platform required"}),
   file: z.instanceof(Array<File>, { message: "File is required" })
     .refine((file: Array<File>) => "text/csv".includes(file?.[0]?.type), "CSV files are only accepted"),
   campaign: z.string().optional(),
@@ -112,14 +115,13 @@ const formSchema = z.object({
 
 function UploadForm() {
   const router = useRouter();
-  const [submitDisabled, setSubmitDisabled] = useState(false);
-  const [submitSuccess, setSubmitSuccess] = useState(false);
   const { user } = useUser();
-
+  const [submitDisabled, setSubmitDisabled] = useState(false);
+  const fetcher = (arg: string[]): FetcherResponse<any> => getAllCampaigns(arg);
+  const { data: campaigns } = useSWR<Campaign[], any, any>([user?.primaryEmailAddress?.emailAddress], fetcher, { refreshInterval: 800 })
+  
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-    },
   })
 
   const dropzone = {
@@ -141,19 +143,27 @@ function UploadForm() {
       complete: (results) => {
         const orders = results.data;
         orders.map(async (order: any, index) => {
-          if (index >= orders.length - 1) return;
-          const survey = await getSurvey(order["Survey Code"]);
-          if (!survey || !userDb?.id) return;
+          if (index >= orders.length - 1) throw new Error();
+          if (!userDb?.id) throw new Error();
           createOrder(
             userDb.id,
             order["Order ID"],
             new Date(order["Date"]),
             order["Name"],
+            order["Email"]
           )
         })
-        setSubmitSuccess(true);
+        toast({
+          title: "Orders Submitted!"
+        })
         router.push("/dashboard/orders");
       },
+      error: e => {
+        toast({
+          title: "Something went wrong...",
+          variant: "destructive"
+        })
+      }
     });
   }
 
@@ -166,25 +176,6 @@ function UploadForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 flex flex-col items-stretch">
-        <FormField
-          control={form.control}
-          name="platform"
-          render={({ field }) => (
-            <FormItem>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select the platform" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="Amazon">Amazon</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         <FormField
           control={form.control}
           name="file"
@@ -234,6 +225,11 @@ function UploadForm() {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
+                  {campaigns?.map((campaign, index) => (
+                    <SelectItem key={index} value={campaign.id}>
+                      {campaign.name}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -241,11 +237,6 @@ function UploadForm() {
           )}
         />
         <Button type="submit" className="md:self-start" disabled={submitDisabled}>Submit</Button>
-        {submitSuccess && (
-          <p className="text-primary">
-            CSV submitted!
-          </p>
-        )}
       </form>
     </Form>
   )

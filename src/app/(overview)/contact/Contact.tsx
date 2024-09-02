@@ -15,6 +15,8 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { useState } from "react"
+import { toast } from "@/components/ui/use-toast"
 
 const formSchema = z.object({
   name: z.string().min(2, "Name too short").max(256, "Name too long"),
@@ -24,15 +26,50 @@ const formSchema = z.object({
 })
 
 export default function ContactForm() {
+  const [submitted, setSubmitted] = useState(false);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
     },
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setSubmitted(true);
+    
+    const name = values.name;
+    const email = values.email;
+    const subject = values.subject;
+    const message = values.query;
+
+    const response = await fetch('/api/contact-us', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name,
+        email,
+        subject,
+        message
+      }),
+    });
+
+    const responseText = await response.text();
+
+    if (response.status <= 400 && response.status < 600) {
+      console.error(responseText);
+      toast({
+        title: "Thank you for reaching out!",
+      })
+    } else {
+      console.log(responseText);
+      setSubmitted(false);
+      toast({
+        title: "Something went wrong...",
+        variant: "destructive"
+      })
+    }
   }
 
   return (
@@ -90,7 +127,7 @@ export default function ContactForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" className="bg-primary hover:bg-primary/90">Next &rarr;</Button>
+        <Button type="submit" className="bg-primary hover:bg-primary/90" disabled={submitted}>Next &rarr;</Button>
       </form>
     </Form>
   )

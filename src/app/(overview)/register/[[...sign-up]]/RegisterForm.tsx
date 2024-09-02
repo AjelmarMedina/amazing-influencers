@@ -9,6 +9,7 @@ import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@/comp
 
 import { useSignUp } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2Icon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Suspense, useState } from "react";
@@ -40,6 +41,7 @@ const verificationFormSchema = z.object({
 
 function Register() {
   const {isLoaded, signUp, setActive} = useSignUp();
+  const [submitted, setSubmitted] = useState(false)
   const [verifying, setVerifying] = useState(false);
   const [userInfo, setUserInfo] = useState<z.infer<typeof registerFormSchema>>();
   const [clerkError, setClerkError] = useState("");
@@ -59,6 +61,7 @@ function Register() {
   function onSubmit(values: z.infer<typeof registerFormSchema>) {
     // ✅ This will be type-safe and validated.
     setClerkError("");
+    setSubmitted(true)
     setUserInfo(values);
     handleSignUp(values);
   }
@@ -147,14 +150,21 @@ function Register() {
             </FormItem>
           )}
         />
+        {/* CAPTCHA Widget */}
+        <div id="clerk-captcha" className="m-0"></div>
         {clerkError && (
           <FormLabel className="text-red-500">
             {clerkError}
           </FormLabel>
         )}
-        <Button type="submit" className="bg-primary hover:bg-primary/90" disabled={verifying}>Submit</Button>
+        <Button type="submit" className="bg-primary hover:bg-primary/90" disabled={submitted}>
+          Submit
+          {submitted &&
+            <Loader2Icon className="ml-2 animate-spin"/>
+          }
+        </Button>
         <p className="text-center">
-          Already hav e an account? <Link href={"/login"} className="text-primary hover:underline">Login</Link>
+          Already have an account? <Link href={"/login"} className="text-primary hover:underline">Login</Link>
         </p>
       </form>
       <VerificationDialog />
@@ -184,6 +194,7 @@ function Register() {
       // change the UI to our pending section.
       setVerifying(true);
     } catch (err: any) {
+      setSubmitted(false);
       setClerkError(err.errors[0].message);
     }
   }
@@ -243,7 +254,12 @@ function Register() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full" disabled={submitEnabled}>Submit</Button>
+              <Button type="submit" className="w-full" disabled={submitEnabled}>
+                Submit
+                {submitEnabled &&
+                  <Loader2Icon className="ml-2 animate-spin"/>
+                }
+              </Button>
             </form>
           </Form>
         </DialogContent>
@@ -289,7 +305,7 @@ function Register() {
         if (!response.ok) throw new Error(`POST Error: ${response.status} - ${response.statusText}` );
     
         await setActive({session: completeSignUp.createdSessionId});
-        router.push("/");
+        router.push("/dashboard");
       } catch (err) {
         console.log("Error:", JSON.stringify(err, null, 2));
       }

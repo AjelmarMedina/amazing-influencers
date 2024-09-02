@@ -41,6 +41,7 @@ export default function Page() {
                 <TableCell>Order ID</TableCell>
                 <TableCell>Date</TableCell>
                 <TableCell>Name</TableCell>
+                <TableCell>Email</TableCell>
               </TableRow>
           </TableHeader>
           <TableBody className="bg-white">
@@ -56,6 +57,7 @@ export default function Page() {
                 <TableCell>{order.orderNum}</TableCell>
                 <TableCell>{order.date.toString()}</TableCell>
                 <TableCell>{order.fullName}</TableCell>
+                <TableCell>{order.email}</TableCell>
               </TableRow>
             ))}
           </TableBody>

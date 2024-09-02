@@ -11,6 +11,7 @@ export async function createOrder(
   orderNum: string,
   date: Date,
   fullName: string,
+  email: string,
 ) {
   // prepare request
   const apiUrl = "/api/orders/create";
@@ -23,6 +24,7 @@ export async function createOrder(
       orderNum,
       date,
       fullName,
+      email,
       userId
     }),
   };
