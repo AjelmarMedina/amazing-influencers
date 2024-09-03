@@ -143,11 +143,29 @@ function UploadForm() {
       header: true,
       dynamicTyping: true,
       complete: (results) => {
-        const orders = results.data;
+        const orders: any[] = results.data;
 
-        orders.map((order: any, index) => {
+        // Invalid CSV
+        if (!(
+          orders[0]["Order ID"] ||
+          orders[0]["Date"] ||
+          orders[0]["Name"] ||
+          orders[0]["Email"]
+        )) {
+          toast({
+            title: "Invalid CSV format...",
+            description: `Please include, "Order ID", "Date", "Name", and "Email"`,
+            variant: "destructive"
+          })
+          setSubmitDisabled(false);
+          return;
+        }
+
+        orders.map((order: any, index: number) => {
           if (index >= orders.length - 1) return; // last csv row is null 
           if (userDb.orders?.find((orderDb) => orderDb.orderNum == order["Order ID"])) return; // check for duplicates
+          if (!/^\d{3}-\d{7}-\d{7}$/.test(order["Order ID"])) return; // Match Order number format
+
           createOrder(
             userDb.id,
             order["Order ID"],
@@ -166,6 +184,7 @@ function UploadForm() {
       error: e => {
         toast({
           title: "Something went wrong...",
+          description: e.message,
           variant: "destructive"
         })
         setSubmitDisabled(false);

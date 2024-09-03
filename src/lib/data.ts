@@ -234,6 +234,23 @@ export async function getAllReviews(userEmail: string): Promise<ReviewsSchema[] 
   return json;
 }
 
+export async function deleteOrder(id: string): Promise<Boolean> {
+  // prepare request
+  const apiUrl = "/api/orders/delete";
+  const requestData = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      id
+    }),
+  };
+
+  const res = await fetch(apiUrl, requestData);
+  return res.ok;
+}
+
 export async function deleteProduct(id: string): Promise<Boolean> {
   // prepare request
   const apiUrl = "/api/products/delete";
