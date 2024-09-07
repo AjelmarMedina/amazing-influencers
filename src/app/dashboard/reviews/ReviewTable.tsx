@@ -8,9 +8,10 @@ import { ShippingInfo } from "./components/shipping";
 import { ReviewerInfo } from "./components/reviewer"
 
 import { useUser } from "@clerk/nextjs";
-import { ClipboardCheckIcon, StarIcon, TruckIcon } from "lucide-react";
+import { ClipboardCheckIcon, DownloadIcon, StarIcon, TruckIcon } from "lucide-react";
 import Link from "next/link";
 import useSwr from 'swr';
+import { unparse } from "papaparse";
 
 export default function ReviewTable() {
   const { user } = useUser();
@@ -32,7 +33,7 @@ export default function ReviewTable() {
       </section>
     </div>
   )
-  if (reviews) return (
+  if (reviews) return (<>
     <div className="shadow-md rounded-xl overflow-auto grid">
       <Table className="shadow-md rounded-xl">
         <TableHeader className="bg-[#F3F4F6]">
@@ -75,7 +76,35 @@ export default function ReviewTable() {
         </TableBody>
       </Table>
     </div>
-  )
+    <Button
+      onClick={() => {
+        const csvStr = unparse(reviews.map((review) => {
+          return {
+            "Name": review.reviewerInfo.name,
+            "Rating": review.rating,
+            "Review": review.review,
+            "Date": review.date,
+            "Email": review.shippingInfo.email,
+            "Phone": review.shippingInfo.contactNum + " ",
+            "Address": `${review.shippingInfo.address1} ${review.shippingInfo.address2 ?? ""}`,
+            "City": review.shippingInfo.city,
+            "Full Name": review.shippingInfo.fullName,
+            "State/Province": review.shippingInfo.stateProvince,
+            "ZIP Code": review.shippingInfo.zipCode,
+          }
+        }));
+        const blob = new Blob([csvStr], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'Reviews.csv';
+        a.click();
+      }}
+    >
+      <DownloadIcon className="mr-2"/>
+      Download Reviews
+    </Button>
+    </>)
 }
 
 function Rating({ stars }: { stars: number }) {
