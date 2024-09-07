@@ -92,7 +92,7 @@ const Home = () => {
         <section>
           <SimpleSlider className="bg-[rgba(32,201,151,0.05)]" />
         </section>
-        <section className={style.sec3main}>
+{/*         <section className={style.sec3main}>
           <div id="try">
             <h2 className={style.sec3h2}>
                 Try It Now
@@ -103,7 +103,7 @@ const Home = () => {
             
           </div>
           <img src={"/images/pic6.png"} alt="" />
-        </section>
+        </section> */}
       </section>
       <Footer />
     </>
