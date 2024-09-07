@@ -54,7 +54,7 @@ export async function createProduct(userId: string, name: string, type: string):
   return res.ok;
 }
 
-export async function createGiveaway(userId: string, name: string, type: string, status: boolean): Promise<Boolean> {
+export async function createGiveaway(userId: string, name: string, type: string, status: boolean, image: File | undefined): Promise<Boolean> {
   // prepare request
   const apiUrl = "/api/giveaways/create";
   const requestData = {
