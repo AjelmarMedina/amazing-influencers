@@ -10,8 +10,10 @@ import {
   TableHeader,
   TableRow
 } from "@/components/ui/table";
+import { notFound } from "next/navigation";
 
-export default function Reviews() {
+export default function Campaigns() {
+  return notFound(); // Removed Campaigns feature
   return (
     <div className="max-w-full flex flex-col w-full space-y-4">
       <header className="flex flex-row justify-between">
