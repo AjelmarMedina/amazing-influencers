@@ -34,7 +34,7 @@ import { createOrder, getAllCampaigns, getSurvey, getUser } from "@/lib/data";
 import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Campaign } from "@prisma/client";
-import { PaperclipIcon, StickyNoteIcon } from "lucide-react";
+import { Loader2Icon, PaperclipIcon, StickyNoteIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Papa from 'papaparse';
 import { Suspense, useState } from "react";
@@ -143,11 +143,29 @@ function UploadForm() {
       header: true,
       dynamicTyping: true,
       complete: (results) => {
-        const orders = results.data;
-        console.log(userDb?.orders);
-        orders.map((order: any, index) => {
+        const orders: any[] = results.data;
+
+        // Invalid CSV
+        if (!(
+          orders[0]["Order ID"] ||
+          orders[0]["Date"] ||
+          orders[0]["Name"] ||
+          orders[0]["Email"]
+        )) {
+          toast({
+            title: "Invalid CSV format...",
+            description: `Please include, "Order ID", "Date", "Name", and "Email"`,
+            variant: "destructive"
+          })
+          setSubmitDisabled(false);
+          return;
+        }
+
+        orders.map((order: any, index: number) => {
           if (index >= orders.length - 1) return; // last csv row is null 
           if (userDb.orders?.find((orderDb) => orderDb.orderNum == order["Order ID"])) return; // check for duplicates
+          if (!/^\d{3}-\d{7}-\d{7}$/.test(order["Order ID"])) return; // Match Order number format
+
           createOrder(
             userDb.id,
             order["Order ID"],
@@ -156,14 +174,17 @@ function UploadForm() {
             order["Email"]
           )
         })
+
         toast({
           title: "Orders Submitted!",
+          description: "Uploading your orders.. We will redirect you to the Orders page once complete!"
         })
-        router.push("/dashboard/orders");
+        setTimeout(() => router.push("/dashboard/orders"), 500)
       },
       error: e => {
         toast({
           title: "Something went wrong...",
+          description: e.message,
           variant: "destructive"
         })
         setSubmitDisabled(false);
@@ -240,7 +261,12 @@ function UploadForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" className="md:self-start" disabled={submitDisabled}>Submit</Button>
+        <Button type="submit" className="md:self-start" disabled={submitDisabled}>
+          Submit
+          {submitDisabled && (
+            <Loader2Icon className="animate-spin ml-2"/>
+          )}
+        </Button>
       </form>
     </Form>
   )

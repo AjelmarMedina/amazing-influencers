@@ -12,13 +12,14 @@ import {
 } from "@/components/ui/table";
 import { getAllOrders } from "@/lib/data";
 import { useUser } from "@clerk/nextjs";
-import { ExternalLinkIcon } from "lucide-react";
+import { ExternalLinkIcon, Trash2Icon, TrashIcon } from "lucide-react";
 import Link from "next/link";
 import useSwr from 'swr';
+import { deleteOrder } from "../../../../lib/data";
 
 export default function Page() {
   const { user } = useUser();
-  const { data } = useSwr<OrderSchema[], any, any>(user?.primaryEmailAddress?.emailAddress, getAllOrders);
+  const { data, mutate } = useSwr<OrderSchema[], any, any>(user?.primaryEmailAddress?.emailAddress, getAllOrders);
 
   return (
     <div className="max-w-full flex flex-col w-full space-y-4">
@@ -42,6 +43,7 @@ export default function Page() {
                 <TableCell>Date</TableCell>
                 <TableCell>Name</TableCell>
                 <TableCell>Email</TableCell>
+                <TableCell />
               </TableRow>
           </TableHeader>
           <TableBody className="bg-white">
@@ -58,6 +60,14 @@ export default function Page() {
                 <TableCell>{order.date.toString()}</TableCell>
                 <TableCell>{order.fullName}</TableCell>
                 <TableCell>{order.email}</TableCell>
+                <TableCell>
+                  <Button 
+                    variant={"ghost"}
+                    onClick={() => deleteOrder(order.id).then(() => mutate())}
+                  >
+                    <TrashIcon className="text-red-500" />
+                  </Button>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

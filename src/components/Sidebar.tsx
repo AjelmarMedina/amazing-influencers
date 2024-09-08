@@ -40,11 +40,11 @@ export default function Sidebar({ className }: React.HtmlHTMLAttributes<HTMLElem
     {
       section: "distribution",
       links: [
-        {
-          name: "Campaigns",
-          route: "/campaigns",
-          icon: (<StoreIcon />),
-        },
+        // {
+        //   name: "Campaigns",
+        //   route: "/campaigns",
+        //   icon: (<StoreIcon />),
+        // },
         {
           name: "Package Inserts",
           route: "/packages",

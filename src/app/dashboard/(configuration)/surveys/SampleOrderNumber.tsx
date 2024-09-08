@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { toast } from "@/components/ui/use-toast";
 import { InfoIcon } from "lucide-react";
 
 export default function SampleOrderNumber() {
@@ -10,7 +11,14 @@ export default function SampleOrderNumber() {
         <InfoIcon className="text-white block self-center" fill="#20c997" />
         <p>To test surveys, use order number <span className="text-[#DAB42B]">888-5049177-9546820</span> for any marketplace. </p>
       </div>
-      <Button onClick={() => navigator.clipboard.writeText("888-5049177-9546820")}>
+      <Button 
+        onClick={() => {
+          navigator.clipboard.writeText("888-5049177-9546820")
+          toast({
+            title: "Copied Sample Order Number",
+          })
+        }}
+      >
         Copy Order Number
       </Button>
     </section>

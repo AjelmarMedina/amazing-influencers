@@ -87,7 +87,7 @@ function Rate() {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 flex flex-col items-stretch bg-white p-5 rounded-xl w-full">
         <div className="flex flex-col items-stretch text-center">
-          <p className="text-[#343A40] text-xs">Step 2 of 5</p>
+          <p className="text-[#343A40] text-base italic">Step 2 of 5</p>
           <h2 className="text-base">Please fill out the form to claim your reward.</h2>
         </div>
         <article className="flex flex-col items-center font-bold text-base text-center">
