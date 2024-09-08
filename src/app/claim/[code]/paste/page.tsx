@@ -71,7 +71,7 @@ function Paste() {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 flex flex-col items-stretch bg-white p-5 rounded-xl w-full">
         <div className="flex flex-col items-stretch text-center">
-          <p className="text-[#343A40] text-xs">Step 3 of 5</p>
+          <p className="text-[#343A40] text-base italic">Step 3 of 5</p>
           <h2 className="text-base">Please fill out the form to claim your reward.</h2>
           <p className="text-[#343A40] text-xs">Please consider leaving your honest, unbiased review on Amazon</p>
         </div>

@@ -102,7 +102,7 @@ function Shipping() {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 flex flex-col items-stretch bg-white p-5 rounded-xl w-full">
         <div className="flex flex-col items-stretch text-center">
-          <p className="text-[#343A40] text-xs">Step 5 of 5</p>
+          <p className="text-[#343A40] text-base italic">Step 5 of 5</p>
           <h2 className="text-base">Please enter your shipping information.</h2>
           <p className="text-[#343A40] text-xs">Please double-check all information is correct before submitting. Inputting incorrect information may result in you not receiving your gift.</p>
           </div>
