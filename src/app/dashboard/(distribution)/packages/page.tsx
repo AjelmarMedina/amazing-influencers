@@ -24,8 +24,13 @@ import { getUser } from "@/lib/data";
 import { useUser } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
+import { renderSVG } from "uqr";
+import { toJpeg, toPng } from "html-to-image"
 
 export default function Page() {
+  const [nickname, setNickname] = useState("");
+
   return (
     <div className="max-w-full flex flex-col w-full space-y-4">
       <header className="flex flex-row justify-start items-start space-x-4">
@@ -36,10 +41,22 @@ export default function Page() {
           </p>
         </div>
       </header>
-      <PackageInsert />
+      <PackageInsert nicknameState={[nickname, setNickname]}/>
       <div className="justify-self-stretch flex flex-row justify-center">
-        <div className="grid grid-cols-2 gap-4">
-          <Button>
+        <div className="grid grid-cols-1 gap-4">
+          <Button
+            onClick={() => {
+              const $package = document.getElementById("package");
+              if (!$package) return;
+              toJpeg($package)
+                .then(dataUrl => {
+                  const a = document.createElement("a");
+                  a.download = `${nickname}.jpeg`;
+                  a.href = dataUrl;
+                  a.click();
+                })
+            }}
+          >
             Download Assets
           </Button>
         </div>
@@ -48,8 +65,8 @@ export default function Page() {
   )
 }
 
-function PackageInsert() {
-  const [nickname, setNickname] = useState("");
+function PackageInsert({ nicknameState }: any) {
+  const [nickname, setNickname] = nicknameState;
   const [surveyCode, setSurvey] = useState("");
   const [backgroundColor, setBackgroundColor] = useState("#20C997");
   const [headline, setHeadline] = useState("");
@@ -68,24 +85,63 @@ function PackageInsert() {
           <h2 className="font-bold text-xl mb-4 justify-self-start self-start">Preview</h2>
           <div className="w-full h-full flex flex-col items-center justify-center">
             <div 
-              className="min-w-72 min-h-48 max-w-full max-h-full rounded-lg flex flex-col items-start space-y-4 p-4"
+              id="package"
+              className="min-w-72 min-h-48 max-w-full max-h-full rounded-lg flex flex-col items-center space-y-4 p-4 border-2 bg-slate-50"
               style={{
-                backgroundColor: backgroundColor
+                borderColor: backgroundColor
               }}
             >
-              <h1 className="text-2xl font-bold self-center">
-                {nickname}
+              <h1 className="text-sm self-start italic">
+                {nickname ? nickname : "Package nickname here"}
               </h1>
-              <h2 className="text-lg font-bold">
-                {headline}
+              <h2
+                className="text-2xl font-bold"
+                style={{
+                  color: backgroundColor
+                }}
+              >
+                {headline ? headline : "Your Headline Here"}
               </h2>
-              <p className="text-base">
-                {subtitle}
+              <p className="text-lg font-bold">
+                {subtitle ? subtitle : "Your subtitle here"}
               </p>
-              <Link href={`/claim/${surveyCode}`}>https://AmazingInfluencers.com/claim/{surveyCode}</Link>
+              <Link 
+                href={`/claim/${surveyCode}`}
+                style={{
+                  color: backgroundColor,
+                }}  
+              >
+                https://AmazingInfluencers.com/claim/{surveyCode ? surveyCode : "123456"}
+              </Link>
+              <Image
+                className="rounded-lg border"
+                style={{
+                  borderColor: backgroundColor,
+                }}
+                src={`data:image/svg+xml;utf8,${
+                  encodeURIComponent(renderSVG(`https://AmazingInfluencers.com/claim/${surveyCode}`))
+                }`}
+                alt={"QR Code"}
+                width={256}
+                height={256}
+              />
+
               <hr className="text-[rgba(52,58,64,0.2)]" />
-              Learn more:
-              <Link href={url}>{url}</Link>
+              
+              {url && (<>
+                <p className="self-start text-base">
+                  Learn more:
+                </p>
+                <Link
+                  className="self-start text-base"
+                  href={url}
+                  style={{
+                    color: backgroundColor,
+                  }}  
+                >
+                  {url}
+                </Link>
+              </>)}
             </div>
           </div>
         </aside>
