@@ -54,7 +54,7 @@ export default function Page() {
                 </TableCell>
               </TableRow>
             )}
-            {data?.map((order: OrderSchema, index) => (
+            {data && data.length && data?.map((order: OrderSchema, index) => (
               <TableRow key={index} className="font-medium">
                 <TableCell>{order.orderNum}</TableCell>
                 <TableCell>{order.date.toString()}</TableCell>
