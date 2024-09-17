@@ -31,13 +31,15 @@ import {
 } from "@/components/ui/table";
 import { toast } from "@/components/ui/use-toast";
 import { createOrder, getAllCampaigns, getSurvey, getUser } from "@/lib/data";
+import { OrderSchema } from "@/lib/types";
 import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Campaign } from "@prisma/client";
 import { Loader2Icon, PaperclipIcon, StickyNoteIcon } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Papa from 'papaparse';
-import { Suspense, useState } from "react";
+import { cloneElement, Suspense, useState } from "react";
 import { DropzoneOptions } from "react-dropzone";
 import { useForm } from "react-hook-form";
 import useSWR from "swr";
@@ -66,44 +68,19 @@ export default function Page() {
       </header>
       <section className="shadow-md bg-white rounded-xl flex flex-col items-stretch">
         <header className="p-6 bg-[rgba(243,244,246,0.8)] justify-start">
-          <h2 className="font-bold text-base">Which platform are you uploading values for?</h2>
+          <h2 className="font-bold text-base">Upload Orders CSV</h2>
         </header>
         <div className="p-6 flex flex-col items-stretch space-y-4">
-          <p>Values are assigned to the platform, meaning that someone who has a value for Platform A will not be allowed to use that value on Platform B and vice versa. Upload values to the platform that your respondent will be using their value on. </p>
+          <p>
+            <strong>Note:</strong> Ensure proper upload formatting by downloading the Amazon {" "}
+            <Link href={"/sample.csv"} download={"sample.csv"} className="underline text-primary">sample.csv</Link>
+          </p>
           <Suspense>
             <UploadForm />
           </Suspense>
         </div>
       </section>
-      <section className="shadow-md bg-white rounded-xl flex flex-col items-stretch">
-        <header className="p-6 bg-[rgba(243,244,246,0.8)] justify-start">
-          <h2 className="font-bold text-base">Order search</h2>
-        </header>
-        <div className="p-6 flex flex-col items-stretch space-y-4">
-          <p> Check if you&apos;ve imported a specific order by searching for its source platform Order ID, name, email, or phone. </p>
-          <div className="w-full overflow-hidden grid">
-            <Table className="w-full table-auto text-nowrap">
-              <TableHeader className="bg-[#F3F4F6]">
-                  <TableRow className="text-[#343A40] font-bold">
-                    <TableCell>Uploaded</TableCell>
-                    <TableCell>Status</TableCell>
-                    <TableCell>File</TableCell>
-                    <TableCell>Marketplace</TableCell>
-                    <TableCell>User</TableCell>
-                    <TableCell>Processed Orders</TableCell>
-                  </TableRow>
-              </TableHeader>
-              <TableBody className="bg-white">
-                {data.map((row, index) => (
-                  <TableRow key={index} className="font-medium">
-                    {/* TODO: Table Row */}
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        </div>
-      </section>
+      {/* <OrderSearch data={data} /> */}
     </div>
   )
 }
@@ -238,7 +215,7 @@ function UploadForm() {
             </FormItem>
           )}
         />
-        <FormField
+        {/* <FormField
           control={form.control}
           name="campaign"
           render={({ field }) => (
@@ -260,7 +237,7 @@ function UploadForm() {
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
         <Button type="submit" className="md:self-start" disabled={submitDisabled}>
           Submit
           {submitDisabled && (
@@ -269,5 +246,39 @@ function UploadForm() {
         </Button>
       </form>
     </Form>
+  )
+}
+
+function OrderSearch({ data }: {data: OrderSchema[]}) {
+  return (
+    <section className="shadow-md bg-white rounded-xl flex flex-col items-stretch">
+      <header className="p-6 bg-[rgba(243,244,246,0.8)] justify-start">
+        <h2 className="font-bold text-base">Order search</h2>
+      </header>
+      <div className="p-6 flex flex-col items-stretch space-y-4">
+        <p> Check if you&apos;ve imported a specific order by searching for its source platform Order ID, name, email, or phone. </p>
+        <div className="w-full overflow-hidden grid">
+          <Table className="w-full table-auto text-nowrap">
+            <TableHeader className="bg-[#F3F4F6]">
+                <TableRow className="text-[#343A40] font-bold">
+                  <TableCell>Uploaded</TableCell>
+                  <TableCell>Status</TableCell>
+                  <TableCell>File</TableCell>
+                  <TableCell>Marketplace</TableCell>
+                  <TableCell>User</TableCell>
+                  <TableCell>Processed Orders</TableCell>
+                </TableRow>
+            </TableHeader>
+            <TableBody className="bg-white">
+              {data.map((row, index) => (
+                <TableRow key={index} className="font-medium">
+                  {/* TODO: Table Row */}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </div>
+    </section>
   )
 }
