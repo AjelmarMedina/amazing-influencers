@@ -31,8 +31,8 @@ export default function Page() {
           <h2 className="font-bold text-base">Order search</h2>
         </header>
         <div className="p-6 flex flex-col items-stretch space-y-4">
-          <p> Check if you&apos;ve imported a specific order by searching for its source platform Order ID, name, email, or phone. </p>
-          <Input placeholder="Search here..." />
+          <p>Any order ID uploaded here will be verified against the customer-submitted order ID in the survey links.</p>
+          {/* <Input placeholder="Search here..." /> */}
         </div>
       </section>
       <section className="shadow-md rounded-xl w-full overflow-hidden grid">
@@ -54,7 +54,7 @@ export default function Page() {
                 </TableCell>
               </TableRow>
             )}
-            {data?.map((order: OrderSchema, index) => (
+            {data && data.length && data?.map((order: OrderSchema, index) => (
               <TableRow key={index} className="font-medium">
                 <TableCell>{order.orderNum}</TableCell>
                 <TableCell>{order.date.toString()}</TableCell>

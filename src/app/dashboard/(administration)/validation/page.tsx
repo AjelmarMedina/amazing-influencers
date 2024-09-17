@@ -7,6 +7,7 @@ import {
   TableHeader,
   TableRow
 } from "@/components/ui/table";
+import { notFound } from "next/navigation";
 
 type ValidationSchema = {
   date: string;
@@ -20,7 +21,7 @@ type ValidationSchema = {
 export default function Page() {
   const data: Array<ValidationSchema> = [
   ]
-
+  return notFound();
   return (
     <div className="max-w-full flex flex-col w-full space-y-4">
       <header className="flex flex-col items-stretch space-y-4">

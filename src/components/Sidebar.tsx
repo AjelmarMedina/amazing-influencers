@@ -65,11 +65,11 @@ export default function Sidebar({ className }: React.HtmlHTMLAttributes<HTMLElem
           route: "/uploads",
           icon: (<UploadIcon />),
         },
-        {
-          name: "Validation Center",
-          route: "/validation",
-          icon: (<CheckIcon />),
-        },
+        // {
+        //   name: "Validation Center",
+        //   route: "/validation",
+        //   icon: (<CheckIcon />),
+        // },
       ]
     },
 

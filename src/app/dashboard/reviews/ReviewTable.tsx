@@ -15,7 +15,7 @@ import { unparse } from "papaparse";
 
 export default function ReviewTable() {
   const { user } = useUser();
-  const { data: reviews } = useSwr<ReviewsSchema[], any, any>(user?.primaryEmailAddress?.emailAddress, getAllReviews)
+  const { data: reviews, isLoading, error } = useSwr<ReviewsSchema[], any, any>(user?.primaryEmailAddress?.emailAddress, getAllReviews)
   
   function downloadReviews() {
     if (!reviews) return;
@@ -42,7 +42,7 @@ export default function ReviewTable() {
     a.click();
   }
 
-  if (!reviews) return (
+  if (isLoading || error || !reviews) return (
     <div className="w-full flex flex-col justify-center items-center">
       <section className="w-full bg-white rounded-xl shadow-lg px-6 py-10 flex flex-col justify-center items-center text-center space-y-4">
         <StarIcon className="text-primary w-8 h-8"/>
@@ -58,7 +58,7 @@ export default function ReviewTable() {
       </section>
     </div>
   )
-  if (reviews) return (<>
+  if (!isLoading && !error && reviews.length) return (<>
     <div className="shadow-md rounded-xl overflow-auto grid">
       <Table className="shadow-md rounded-xl">
         <TableHeader className="bg-[#F3F4F6]">
@@ -113,7 +113,7 @@ export default function ReviewTable() {
 function Rating({ stars }: { stars: number }) {
   return(
     <div className="flex justify-stretch flex-nowrap">
-      {[...Array(5)].map((val, index) => (
+      {[0, 0, 0, 0, 0].map((val, index) => (
         <StarIcon 
           key={index}
           style={{

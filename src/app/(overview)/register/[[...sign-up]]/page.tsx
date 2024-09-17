@@ -1,4 +1,4 @@
-import RegisterForm from "./RegisterForm";
+import Page from "./RegisterForm";
 
 export default function Register() {
   return (
@@ -12,7 +12,7 @@ export default function Register() {
         </p>
       </section>
       <section className="w-full flex justify-center">
-        <RegisterForm />
+        <Page />
       </section>
     </main>
   )
