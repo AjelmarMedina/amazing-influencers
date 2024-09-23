@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { Copy , Map } from 'lucide-react'
+import { Copy , DownloadIcon, Map } from 'lucide-react'
 
 import { useToast } from "@/components/ui/use-toast"
 import { type ShippingInfoSchema } from '@/lib/types'
@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { unparse } from 'papaparse'
 
 interface ShippingInfoProps {
   children: React.ReactNode,
@@ -29,6 +30,26 @@ export const ShippingInfo: React.FC<ShippingInfoProps> = ({children, data}) => {
   const onCopy = (data: string) => {
     navigator.clipboard.writeText(data);
     toast({ description:'Shipping information copied to clipboard.'});
+  }
+
+  function downloadAddress() {
+    if (!data) return;
+    const csvStr = unparse([{
+      "Full Name": data.fullName,
+      "Contact": data.contactNum,
+      "Email": data.email,
+      "Address 1": data.address1,
+      "Address 2": data.address2 ?? "",
+      "City": data.city,
+      "State/Province": data.stateProvince,
+      "Zip Code": data.zipCode,
+    }]);
+    const blob = new Blob([csvStr], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${data.fullName}'s Address.csv`;
+    a.click();
   }
 
   return (
@@ -62,7 +83,14 @@ export const ShippingInfo: React.FC<ShippingInfoProps> = ({children, data}) => {
           >
             <Copy className="mr-2 h-4 w-4" /> Copy Shipping Info
           </Button>
-
+          <Button 
+            type="button" 
+            variant="link"
+            onClick={downloadAddress}
+          >
+            <DownloadIcon className="mr-2 h-4 w-4" /> Download
+          </Button>
+              
           <DialogClose asChild>
             <Button type="button" variant="secondary">
               Close

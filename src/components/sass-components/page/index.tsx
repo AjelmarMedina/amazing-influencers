@@ -4,6 +4,7 @@ import Link from "next/link";
 import SimpleSlider from "../slickslider/slider";
 import style from "./home.module.scss";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
 const Home = () => {
   return (
@@ -31,8 +32,8 @@ const Home = () => {
           </div>
         </section>
 
-        <section className={style.sec2main}>
-          <h2 className={style.h2sec2}>how it works</h2>
+        <section className={cn(style.sec2main, "pb-16")}>
+          <h2 className="text-4xl font-bold text-slate-900">How it works</h2>
 
         
             <div className={style.stepscontainer}>
@@ -51,8 +52,8 @@ const Home = () => {
               <div className={style.step2}>
                 
                 <div className={style.content}>
-                  <h3>Enter your details</h3>
-                  <p>Simply enter a few details about your purchase.</p>
+                  <h3>Post images and make a reel</h3>
+                  <p>Upload a reel on Instagram showcasing the product.</p>
                 </div>
                 <div className={style.number}>
                   <span>2</span>
@@ -70,20 +71,32 @@ const Home = () => {
                   <span>3</span>
                 </div>
                 <div className={style.content}>
-                  <h3>Share your feedback</h3>
-                  <p>Answer a few quick questions about your experience.</p>
+                  <h3>Give your review</h3>
+                  <p>Leave a review on the platform or website where you made your purchase.</p>
                 </div>
               </div>
               <div className={style.step4}>
                 <div className={style.content}>
-                  <h3>Claim your reward</h3>
-                  <p>Unlock exclusive offers and cashbacks!</p>
+                  <h3>Post on Instagram</h3>
+                  <p>Tag us on Instagram and share your experience!</p>
                 </div>
                 <div className={style.number}>
                   <span>4</span>
                 </div>
                 <div className={style.icon4}>
-                  <img src={"/images/pic5.png"} alt="Reward" />
+                  <img src={"/images/Instagram.png"} alt="Reward" />
+                </div>
+              </div>
+              <div className={style.step3}>
+                <div className={style.icon3}>
+                  <img src={"/images/pic5.png"} alt="Details" />
+                </div>
+                <div className={style.number}>
+                  <span>5</span>
+                </div>
+                <div className={style.content}>
+                  <h3>Submit your details</h3>
+                  <p>Fill in your info to unlock your rewards..</p>
                 </div>
               </div>
             </div>

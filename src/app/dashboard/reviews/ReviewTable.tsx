@@ -59,6 +59,12 @@ export default function ReviewTable() {
     </div>
   )
   if (!isLoading && !error && reviews.length) return (<>
+    <Button
+      onClick={downloadReviews}
+    >
+      <DownloadIcon className="mr-2"/>
+      Download Reviews
+    </Button>
     <div className="shadow-md rounded-xl overflow-auto grid">
       <Table className="shadow-md rounded-xl">
         <TableHeader className="bg-[#F3F4F6]">
@@ -101,12 +107,7 @@ export default function ReviewTable() {
         </TableBody>
       </Table>
     </div>
-    <Button
-      onClick={downloadReviews}
-    >
-      <DownloadIcon className="mr-2"/>
-      Download Reviews
-    </Button>
+    
     </>)
 }
 

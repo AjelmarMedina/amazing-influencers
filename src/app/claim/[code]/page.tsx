@@ -65,7 +65,7 @@ function Claim({ survey }: { survey: SurveySchema }) {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 flex flex-col items-stretch bg-white p-5 rounded-xl w-full text-center">
         <div className="flex flex-col items-stretch">
           <p className="text-[#343A40] text-base italic">Step 1 of 5</p>
-          <h2 className="text-base">Please fill out the form to claim your reward.</h2>
+          <h2 className="text-base">Enter your details to unlock your reward.</h2>
         </div>
         <Image 
           alt=""
